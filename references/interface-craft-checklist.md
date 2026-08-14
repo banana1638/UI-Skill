@@ -39,11 +39,39 @@ Use this reference during component implementation and design QA to audit state 
 
 ---
 
-## 3. Anti-AI-Slop Final Verification
+## 3. Defensive UI & Edge Case Auditing
+
+- [ ] **Text Overflow & Flex Containment**: All dynamic labels, names, and titles are protected with `truncate` or `line-clamp-*`. Flex parent containers declare `min-w-0` to prevent layout burst.
+- [ ] **Loading Skeleton (`animate-pulse`)**: Loading state renders structural skeleton matching target layout without causing cumulative layout shift (CLS).
+- [ ] **Empty State**: Missing or zero data views display an icon, clear explanatory copy, and a primary action CTA.
+- [ ] **Error Fallback**: Local component-level error banner with retry capability without breaking parent layout.
+
+---
+
+## 4. Code Architecture & Component Hygiene
+
+- [ ] **No Monolithic Class Dumping**: Elements avoid >12 direct Tailwind classes; variants are decoupled using `cva` (Class Variance Authority) and `cn()`.
+- [ ] **Hover Degradation**: Desktop hover effects are scoped within `@media (hover: hover)` to prevent sticky/ghost hover on touch devices.
+- [ ] **Glass Performance Fallback**: High-density or mobile views provide clean solid/semi-opaque backgrounds (`bg-background/95`) instead of stacked `backdrop-blur-*`.
+
+---
+
+## 5. Anti-AI-Slop & A11y Verification
 
 - [ ] **Distinct Product Identity**: The design is customized for the specific product persona and does not look like a generic AI template.
 - [ ] **Zero Unused Bento Grids**: Layout structure reflects content hierarchy rather than forcing every section into identical square cards.
 - [ ] **Zero Fake Content**: No invented statistics, fake metrics, or dummy testimonials.
-- [ ] **Mobile Responsiveness**: Layouts scale gracefully down to 320px width without horizontal overflow or clipped targets.
-- [ ] **Touch Target Size**: Touch targets meet minimum 44px x 44px on mobile devices.
+- [ ] **Body Text $\ge 14\text{px}$**: No body copy is styled `< 14px` (`text-sm`). `text-xs` is strictly limited to badges and secondary timestamps.
+- [ ] **WCAG AA Contrast ($\ge 4.5:1$)**: No unreadable low-contrast text (e.g. darker than `text-slate-400` on dark bg, lighter than `text-slate-500` on light bg).
+- [ ] **Mobile Responsiveness (320px+)**: Layouts scale gracefully down to 320px width without horizontal overflow or clipped targets.
+- [ ] **Touch Hit Target Size**: All interactive buttons, icons, and toggles provide a minimum 44px x 44px physical touch area.
+
+---
+
+## 6. Pre-Flight Self-Check (Must Pass Before Delivery)
+
+1. [ ] Did I decouple variants with CVA instead of dumping huge class lists into the HTML?
+2. [ ] Is body text $\ge 14\text{px}$ with WCAG AA $\ge 4.5:1$ contrast against the background?
+3. [ ] If usernames, descriptions, or titles become extremely long, is the layout protected via `min-w-0` and `truncate`/`line-clamp`?
+4. [ ] Can mobile fingers comfortably tap all interactive controls ($\ge 44 \times 44\text{px}$ target)?
 

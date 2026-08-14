@@ -86,8 +86,11 @@ class or otherwise signals the failure so a CSS fallback can engage.
 
 ---
 
-## 4. Focus Ring & Contrast Standards
+## 4. Focus Ring, Contrast & Typography Accessibility Standards
 
+- **Typography Size Floor**:
+  - Body text must **never be smaller than 14px (`text-sm`)**.
+  - `text-xs` (12px) is restricted strictly to badges, tags, or secondary timestamps.
 - **Visible Focus Rings**: Never set `outline: none` without providing a high-contrast focus indicator.
 - **Two-Color Offset Focus Ring**:
   ```css
@@ -97,5 +100,24 @@ class or otherwise signals the failure so a CSS fallback can engage.
     box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.8);
   }
   ```
-- **WCAG AA Contrast**: Maintain minimum 4.5:1 contrast for body copy and 3:1 for interactive icons/borders across all light and dark themes.
+- **WCAG AA Contrast Standards**:
+  - Maintain minimum **4.5:1** contrast for body copy and **3:1** for interactive icons/borders.
+  - **Dark mode threshold**: Never use body text lower than `text-slate-400`.
+  - **Light mode threshold**: Never use body text lower than `text-slate-500`.
+
+---
+
+## 5. Touch Devices & Performance Degradation
+
+- **Physical Hit Targets**: All interactive elements must occupy a minimum **44x44px** hit area (via `min-h-[44px] min-w-[44px]`, `p-2`, or `::after` hit area expansion).
+- **Hover Degradation**: Wrap all non-instant hover animations in `@media (hover: hover)` to prevent sticky active hover states on mobile touchscreens:
+  ```css
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+  ```
+- **Backdrop-Blur Performance Fallback**: Avoid excessive nested `backdrop-filter: blur(*)`. Provide solid/semi-opaque fallbacks (`bg-background/95`) on mobile or low-spec devices to maintain a consistent 60fps frame budget.
 

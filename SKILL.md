@@ -24,14 +24,12 @@ Then:
 3. **Preserve Trusted Behavior**: Never degrade established business logic, validation, accessibility, or security to simplify visual styling.
 4. **Formulate a Visual Thesis**: For full design passes, write a concise visual thesis statement in this format:
    > *"This interface should feel [2-3 emotional qualities] through [2-3 concrete design/motion mechanisms], while keeping [primary task] effortless and accessible."*
-5. **Select a Design Archetype**: For full design passes, choose one of 7 distinct visual styles (do not mix conflicting themes arbitrarily):
-   - **Skeuomorphic & Soft Neumorphic (拟物/新拟物触感)**: Multi-layered soft inset/outset shadows, metallic/leather finish, physical toggle switches, tactile press depth.
-   - **Neo-Brutalism & Retro Modern (新粗犷主义)**: Stark 3px-4px black borders, offset solid shadows (`4px 4px 0 #000`), bold primary colors, high-impact poster headlines.
-   - **Editorial Paper & Luxury (纸质高奢)**: High-contrast serif display font + clean sans copy, subtle paper grain texture, warm ivory canvas (`hsl(40 20% 97%)`), generous whitespace.
-   - **Obsidian Cyberpunk & Dark Mode (黑曜石深色/赛博空间)**: Deep dark background contrast tiers (0-5% HSL lightness), subtle ambient light halos, neon accent pops (`hsl(160 100% 50%)`).
-   - **Swiss International Minimalist (瑞士国际极简)**: Rigid grid alignment, crisp typography contrast, bold monochrome palette with single accent hue, zero ambient blur.
-   - **Spatial Glassmorphism (空间玻璃)**: Dynamic `backdrop-filter: blur(16px) saturate(180%)`, multi-surface glass border highlights, glowing light filters.
-   - **Product-Led High-Trust SaaS (当代高信任度 SaaS)**: Refined micro-interactions, subtle surface elevation, maximum legibility, zero layout shift.
+5. **Select Style Persona & Visual DNA**: Choose a distinct visual gene matched to product intent (never default exclusively to monochrome black/white):
+   - **Modern Tech (极简科技风)**: Cool tones, subtle 1px borders (`border-white/10` or `border-slate-200`), micro-elevation shadows, high contrast.
+   - **Neo-Brutalism (新粗犷/潮牌/Web3 风格)**: Stark 2px-4px black borders (`border-2 border-black`), hard offset shadows (`box-shadow: 4px 4px 0 #000`), saturated color pops, deliberate sharp or pill corners.
+   - **Warm Editorial (人文/内容/知识库风格)**: Serif display titles, warm ivory canvas (`#FDFBF7` / `hsl(40 20% 97%)`), soft low-contrast shadows, generous whitespace, exquisite publication feel.
+   - **Enterprise Clean (传统 B 端/高密度 SaaS 风格)**: High data density, clear Primary/Secondary color blocking, 4px-6px standard radii, crisp tabular numbers, zero layout shift.
+   *(See [references/visual-direction-system.md](references/visual-direction-system.md) for expanded archetype formulas including Skeuomorphic tactile depth and Obsidian Cyberpunk).*
 
 ---
 
@@ -48,10 +46,10 @@ For primary tactile interactions, avoid generic `ease` or `linear` transitions u
 ### Complete Interaction States
 Every user-facing interactive element touched by the work must define distinct, polished visual feedback across relevant states:
 - **Resting**: Clean surface elevation and legible text.
-- **Hover**: Subtle lift (`translateY(-2px)`), shimmer pass, or ambient border highlight with snappy easing.
+- **Hover**: Subtle lift (`translateY(-2px)`), shimmer pass, or ambient border highlight with snappy easing. (Wrap hover styles in `@media (hover: hover)` to prevent mobile ghosting).
 - **Active / Press**: Tactile compression (`scale(0.97)` or inset shadow shift) with zero delay.
 - **Focus-Visible**: High-contrast, 2px-offset focus ring (`outline: 2px solid var(--focus-ring); outline-offset: 2px`).
-- **Loading / Skeleton**: Smooth GPU shimmer gradient (`background: linear-gradient(90deg, ...)`) without layout shift.
+- **Loading / Skeleton**: Smooth GPU shimmer gradient or `animate-pulse` skeleton without layout shift.
 - **Disabled**: Reduced opacity (`0.5`), `cursor: not-allowed`, no hover/active transforms.
 - **Success / Error**: Semantic color pulse and clear inline message or icon state.
 
@@ -81,20 +79,65 @@ See [references/color-and-token-system.md](references/color-and-token-system.md)
 
 ---
 
-## 4. Modern CSS & Production Quality
+## 4. Modern Code Structure, A11y & Defensive Engineering
 
-Use modern platform features when the project's browser support allows them, and provide a functional baseline when support is uncertain.
+### 4.1 Code Structure & Maintainability (No Monolithic Class Dumping)
+- **Class Limit**: Never dump >12 arbitrary Tailwind classes directly onto a single JSX/HTML element.
+- **Variant Decoupling**: Decouple component styling using `cva` (Class Variance Authority) and `cn()` utility helpers:
 
-1. **Container Queries (`@container`)**: Make reusable components respond to their container width, not just the viewport width.
-2. **`:has()` Parent Selection**: Style cards or form groups dynamically based on child state (`card:has(input:checked)`) with tightly scoped selectors.
-3. **CSS Subgrid**: Align nested form grids or card layouts seamlessly to their parent grid when supported.
-4. **Native Popover & Dialog API**: Use native `<dialog>` and `popover` only when their behavior matches the interaction contract.
-5. **Scroll-Driven Animations**: Use `animation-timeline: scroll()` for progressive enhancement; prefer GSAP ScrollTrigger when compatibility or orchestration matters.
-6. **View Transitions API**: Smoothly animate route or state morphing when it does not obscure loading, focus, or navigation state.
-7. **Hardware Acceleration**: Animate only GPU-friendly properties (`transform`, `opacity`). Avoid animating `height`, `margin`, or `padding` to prevent layout reflows (CLS).
+```tsx
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-### Tailwind CSS Integration
-When using Tailwind CSS, map all semantic tokens into `tailwind.config.js` → `theme.extend` rather than scattering arbitrary values (`text-[hsl(220,30%,10%)]`) across templates. Components should reference theme keys (`text-primary`, `bg-surface-canvas`) so the design system remains centralized and theme-switchable.
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        subtle: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+```
+
+### 4.2 Accessibility (A11y) & Real-World UX Rules
+1. **Typography Size Floor**:
+   - **Body text must NEVER be smaller than 14px (`text-sm`)**.
+   - `text-xs` (12px) is restricted strictly to badges, tags, or secondary timestamps.
+2. **Text Contrast Standard (WCAG AA)**:
+   - Body copy contrast against background must be $\ge 4.5:1$.
+   - Deep dark backgrounds: never use text color lighter than `text-slate-400`.
+   - Light backgrounds: never use text color lighter than `text-slate-500`.
+3. **Touch Targets (Hit Area)**:
+   - All interactive elements (icon buttons, toggles, links) must have a physical touch area of at least **44x44px** (using `p-2`, `min-h-[44px] min-w-[44px]`, or pseudo-elements).
+4. **Touch Device Hover Degradation**:
+   - Wrap hover pseudo-classes in `@media (hover: hover)` or framework hover primitives to avoid sticky touch states on mobile.
+5. **GPU & Glass Performance Fallback**:
+   - Avoid globally stacked `backdrop-blur-*`. In low-performance or high-density views, provide a clean opaque/semi-opaque fallback (`bg-background/95`).
+
+### 4.3 Defensive UI & Edge Case Protection
+1. **Text Overflow Protection**:
+   - All dynamic text (usernames, titles, API payloads) must include `truncate` or `line-clamp-*`.
+   - Parent flex containers **must** include `min-w-0` to prevent flex items from bursting the layout.
+2. **Mandatory Edge States**:
+   Every data/card/list view must implement or provide hooks for 3 core states:
+   - **Loading State**: Clean `animate-pulse` skeleton screen matching target layout.
+   - **Empty State**: Centered icon/illustration + informative text + clear Action CTA button.
+   - **Error State**: Localized error banner with retry trigger without breaking the surrounding layout.
 
 ---
 
@@ -112,17 +155,14 @@ Reject or refine the interface if any of the following cliché AI tropes are pre
 
 ---
 
-## 6. Quality Gates Before Delivery
+## 6. Pre-Flight Self-Check & Quality Gates
 
-Before finishing substantial UI work:
+Before outputting final code or finishing delivery, run this **4-Point Pre-Flight Check**:
 
-1. **Run the app or open the artifact** and inspect the actual rendered page, not only the source.
-2. **Check desktop and mobile widths** including 320px, an intermediate breakpoint, and a wide desktop viewport.
-3. **Stress test content** with long labels, empty states, loading states, error states, and missing images when relevant.
-4. **Verify keyboard and reduced-motion behavior**: focus indicators are visible, tab order is logical, and `prefers-reduced-motion` keeps the interface usable.
-5. **Verify script-failure resilience**: for any element whose reveal depends on a CDN-hosted script (GSAP, font loaders, etc.), simulate the script failing to load (block the request in devtools, or disable JS) and confirm the content remains visible and usable. See [references/accessibility-motion-performance.md](references/accessibility-motion-performance.md) §3.5. Never ship a hidden-by-default state that only JS can rescue.
-6. **Check visual integrity**: no clipped text, horizontal overflow, incoherent overlap, layout shift, blurry transformed text, or decorative layers intercepting pointer events.
-7. **Do not invent facts**: use real supplied content or clearly labeled placeholder/sample content.
+1. [ ] **Class Decoupling**: Are CSS classes modular and structured via CVA/variables rather than dumped >12 classes in raw markup?
+2. [ ] **Legibility & Contrast**: Is body text $\ge 14\text{px}$ (`text-sm`) and contrast compliant ($\ge 4.5:1$, no faint low-contrast grays)?
+3. [ ] **Defensive Containment**: Are parent flex containers protected with `min-w-0` and dynamic strings protected with `truncate`/`line-clamp` against text blowout?
+4. [ ] **Touch Target Integrity**: Can mobile fingers reliably tap every interactive icon/button (hit target $\ge 44 \times 44\text{px}$)?
 
 ---
 
@@ -130,10 +170,10 @@ Before finishing substantial UI work:
 
 - Read [references/visual-direction-system.md](references/visual-direction-system.md) for the 7 Design Archetypes, Skeuomorphism/Neumorphism formulas, and typography pairing matrix.
 - Read [references/design-inspiration-and-benchmarks.md](references/design-inspiration-and-benchmarks.md) for industry benchmark products by archetype, curated font catalogs, UI ecosystem layering, and the "Squint Test" visual audit.
-- Read [references/framework-adapters.md](references/framework-adapters.md) for Tailwind CSS token mapping, React/Next.js client boundaries, Vue 3 GSAP context, and Svelte 5 spring physics.
+- Read [references/framework-adapters.md](references/framework-adapters.md) for Tailwind CSS token mapping, CVA component architecture, React/Next.js client boundaries, Vue 3 GSAP context, and Svelte 5 spring physics.
 - Read [references/taste-system-v4-avant-garde.md](references/taste-system-v4-avant-garde.md) for tactile depth physics, pointer tilt, spring motion curves, and CSS 3D transforms.
-- Read [references/accessibility-motion-performance.md](references/accessibility-motion-performance.md) for frame-perfect motion budgets, GPU acceleration, WCAG AA focus rings, and reduced motion fallbacks.
-- Read [references/interface-craft-checklist.md](references/interface-craft-checklist.md) for state completeness auditing, form polish, touch target sizing, and anti-slop verification.
+- Read [references/accessibility-motion-performance.md](references/accessibility-motion-performance.md) for frame-perfect motion budgets, GPU acceleration, WCAG AA focus rings, touch targets, and reduced motion fallbacks.
+- Read [references/interface-craft-checklist.md](references/interface-craft-checklist.md) for state completeness auditing, defensive UI, touch target sizing, and anti-slop verification.
 - Read [references/color-and-token-system.md](references/color-and-token-system.md) for HSL semantic role architecture and dark/light mode elevation scaling.
 - Read [references/compound-components-and-modern-css.md](references/compound-components-and-modern-css.md) for modern HTML5 popover, container query, and top-layer UI patterns.
 - Read [references/fluid-layout-and-typography.md](references/fluid-layout-and-typography.md) for fluid type scales, intrinsic layout primitives (Stack/Switcher/Sidebar), container-aware components, and font delivery optimization.
