@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Console — Next-Gen AI Observability</title>
+  <meta name="description" content="Obsidian dark-mode console with multi-tier contrast, 1px glowing borders, and frame-perfect micro-interactions.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Demo placeholder content only. Replace brand, versions, metrics, and event rows with supplied or verified facts. -->
+  <!-- Ambient Gradient Light (pointer-events: none) -->
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <div class="console-shell">
+    <!-- Header -->
+    <header class="console-header">
+      <div class="brand">
+        <div class="status-indicator live" aria-hidden="true"></div>
+        <span class="brand-title">AETHER // CONSOLE</span>
+        <span class="badge-tag">v2.4.0</span>
+      </div>
+      <div class="header-actions">
+        <span class="shortcut-pill"><kbd>⌘</kbd> <kbd>K</kbd> Quick Command</span>
+        <button class="btn-primary" id="deploy-btn">Deploy Cluster</button>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="console-grid">
+      <!-- Sample Metric Cards -->
+      <section class="card metric-card">
+        <div class="card-header">
+          <span class="card-label">ACTIVE NODES</span>
+          <span class="live-dot" aria-hidden="true"></span>
+        </div>
+        <div class="metric-value counter" data-value="1420">0</div>
+        <div class="metric-footer text-emerald">↑ 12.4% vs last cycle</div>
+      </section>
+
+      <section class="card metric-card">
+        <div class="card-header">
+          <span class="card-label">AVG LATENCY</span>
+          <span class="badge-mono">P99</span>
+        </div>
+        <div class="metric-value counter" data-value="18" data-suffix="ms">0</div>
+        <div class="metric-footer text-muted">Stable across 8 regions</div>
+      </section>
+
+      <section class="card metric-card">
+        <div class="card-header">
+          <span class="card-label">THROUGHPUT</span>
+          <span class="badge-mono">REQ/S</span>
+        </div>
+        <div class="metric-value counter" data-value="94500">0</div>
+        <div class="metric-footer text-emerald">Optimal headroom</div>
+      </section>
+
+      <!-- Main Activity Stream Panel -->
+      <section class="card stream-card">
+        <div class="card-header">
+          <span class="card-label">EVENT STREAM</span>
+          <div class="card-controls">
+            <span class="shortcut-pill"><kbd>ESC</kbd> Pause</span>
+          </div>
+        </div>
+        <div class="stream-list" id="stream-list">
+          <div class="stream-row">
+            <span class="timestamp">14:02:18</span>
+            <span class="event-type badge-emerald">CLUSTER_SYNC</span>
+            <span class="event-desc">Region us-east-1 shards reconciled</span>
+            <span class="event-meta">42ms</span>
+          </div>
+          <div class="stream-row">
+            <span class="timestamp">14:02:15</span>
+            <span class="event-type badge-cyan">MODEL_ROUTE</span>
+            <span class="event-desc">Dynamic failover to fallback pool B</span>
+            <span class="event-meta">12ms</span>
+          </div>
+          <div class="stream-row">
+            <span class="timestamp">14:02:02</span>
+            <span class="event-type badge-emerald">AUTH_ROTATION</span>
+            <span class="event-desc">Ephemeral token re-issued successfully</span>
+            <span class="event-meta">110ms</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+    integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+    crossorigin="anonymous"
+    onerror="document.documentElement.classList.add('motion-unavailable')">
+  </script>
+  <script src="motion-init.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

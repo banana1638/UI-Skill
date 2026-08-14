@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maison Lumière — Curated Living, Refined</title>
+  <meta name="description" content="Discover the art of curated living through handcrafted objects, timeless design, and meticulous craftsmanship.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+
+  <!-- Styles: Tokens first, then components -->
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Demo placeholder content only. Replace brand, metrics, claims, and testimonials with supplied or verified facts. -->
+  <div class="page-wrapper">
+
+    <!-- ── Navigation ── -->
+    <nav class="nav" aria-label="Main navigation" id="main-nav">
+      <a href="#" class="nav-logo">Maison Lumière</a>
+      <ul class="nav-links">
+        <li><a href="#features">Collection</a></li>
+        <li><a href="#testimonial">Stories</a></li>
+        <li><a href="#stats">Impact</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <header class="hero" id="hero">
+      <p class="hero-eyebrow">Curated since 2019</p>
+      <h1 class="hero-headline">Objects that outlast trends</h1>
+      <p class="hero-subtext">
+        Each piece in our collection is chosen for its craft, its story, and its capacity to age with grace.
+      </p>
+      <a href="#features" class="hero-cta" id="hero-cta">
+        Explore the Collection →
+      </a>
+    </header>
+
+    <hr class="divider">
+
+    <!-- ── Features ── -->
+    <section class="features" id="features">
+      <p class="section-eyebrow reveal-up">Why Maison Lumière</p>
+      <h2 class="section-title reveal-up">Craft, not production</h2>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">✦</div>
+          <h3>Artisan Sourced</h3>
+          <p>Every maker is visited in person. We understand their process, their materials, and their standards before a single piece enters our collection.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">◈</div>
+          <h3>Material Integrity</h3>
+          <p>Solid walnut, hand-blown glass, vegetable-tanned leather. Materials that develop character instead of deteriorating.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">▣</div>
+          <h3>Lifetime Guarantee</h3>
+          <p>If it breaks through normal use, we repair or replace it. No time limits, no fine print, no disposable mindset.</p>
+        </article>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ── Sample Stats ── -->
+    <section class="stats" id="stats">
+      <div class="stat-item reveal-up">
+        <div class="stat-number" data-value="127">0</div>
+        <div class="stat-label">Artisan Partners</div>
+      </div>
+      <div class="stat-item reveal-up">
+        <div class="stat-number" data-value="14">0</div>
+        <div class="stat-label">Countries</div>
+      </div>
+      <div class="stat-item reveal-up">
+        <div class="stat-number" data-value="98" data-suffix="%">0</div>
+        <div class="stat-label">Kept, not returned</div>
+      </div>
+      <div class="stat-item reveal-up">
+        <div class="stat-number" data-value="6">0</div>
+        <div class="stat-label">Year avg. ownership</div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- ── Sample Testimonial ── -->
+    <section class="testimonial" id="testimonial">
+      <blockquote>
+        "The walnut writing desk arrived with a handwritten note from its maker in Kyoto. That is the difference."
+      </blockquote>
+      <cite>— Clara M., Architect, Munich</cite>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer" id="footer">
+      <p class="footer-text">© 2026 Maison Lumière. All rights reserved.</p>
+      <ul class="footer-links">
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </footer>
+
+  </div>
+
+  <!-- GSAP via CDN (no build step required). Pin an exact version — never use
+       the unpinned @3 tag with SRI, since the hash must match the exact file
+       bytes. Replace the integrity hashes below with the ones published for
+       the pinned version at https://cdn.jsdelivr.net (each file has its own
+       hash, shown on the jsDelivr package page). -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+    integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"
+    crossorigin="anonymous"
+    onerror="document.documentElement.classList.add('motion-unavailable')">
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"
+    integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"
+    crossorigin="anonymous"
+    onerror="document.documentElement.classList.add('motion-unavailable')">
+  </script>
+  <!-- SplitText is a GSAP Club plugin — uncomment if you have a license:
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/SplitText.min.js" integrity="..." crossorigin="anonymous"></script>
+  -->
+  <script src="motion-init.js"></script>
+  <script src="animations.js" defer></script>
+</body>
+</html>
