@@ -20,7 +20,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from render_pipeline import RenderPipeline, RenderResult
 from vision_reviewer import ActionableFix, ReviewReport, VisionReviewer
