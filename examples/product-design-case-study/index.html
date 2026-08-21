@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Academic — Student Registration Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <span>APEX</span>
+      </div>
+      <h1 class="app-title">Academic Planning & Registration</h1>
+    </div>
+
+    <nav class="app-nav">
+      <a href="#courses" class="nav-link">Catalogue</a>
+      <a href="#planner" class="nav-link active">Timetable Simulator</a>
+      <a href="#audit" class="nav-link">Degree Audit</a>
+      <a href="#grades" class="nav-link">Transcripts</a>
+    </nav>
+  </header>
+
+  <!-- Top Metadata & Action Bar -->
+  <section class="top-meta-bar" aria-label="Registration Status Bar">
+    <div class="meta-stats">
+      <div class="stat-item">
+        <span class="stat-label">Term</span>
+        <span class="stat-value">Fall 2026</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Planned Credits</span>
+        <span class="stat-value" id="creditCount">16 / 18 Max</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Status</span>
+        <span class="stat-value" style="color: var(--semantic-danger);" id="statusIndicator">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          1 Conflict Detected
+        </span>
+      </div>
+    </div>
+
+    <div class="cart-actions">
+      <button class="btn btn-secondary btn-sm" id="btnExport">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export ICS
+      </button>
+      <button class="btn btn-primary" id="btnCommit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        Commit Registration (4 Courses)
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Workspace -->
+  <main class="workspace-container">
+    
+    <!-- Left: Timetable Grid -->
+    <section class="grid-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Weekly Schedule Simulation</h2>
+        <span style="font-size: 0.75rem; color: var(--text-secondary);">Click any class block to view section details</span>
+      </div>
+
+      <div class="timetable-grid">
+        <!-- Headers -->
+        <div class="grid-header-cell">Time</div>
+        <div class="grid-header-cell">Mon</div>
+        <div class="grid-header-cell">Tue</div>
+        <div class="grid-header-cell">Wed</div>
+        <div class="grid-header-cell">Thu</div>
+        <div class="grid-header-cell">Fri</div>
+
+        <!-- 09:00 Row -->
+        <div class="time-label-cell">09:00</div>
+        <div class="grid-slot">
+          <div class="class-block" data-code="CS301">
+            <span class="class-code">CS301</span>
+            <span class="class-name">Algorithms</span>
+            <span class="class-room">Turing 204</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot">
+          <div class="class-block" data-code="CS301">
+            <span class="class-code">CS301</span>
+            <span class="class-name">Algorithms</span>
+            <span class="class-room">Turing 204</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot"></div>
+
+        <!-- 11:00 Row -->
+        <div class="time-label-cell">11:00</div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot" id="slotTue11">
+          <div class="class-block conflict" id="blockCS402" data-code="CS402">
+            <span class="class-code">CS402 (Collision)</span>
+            <span class="class-name">Distributed Systems</span>
+            <span class="class-room">Hopper 102</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot" id="slotThu11">
+          <div class="class-block conflict" id="blockMATH320" data-code="MATH320">
+            <span class="class-code">MATH320 (Collision)</span>
+            <span class="class-name">Linear Algebra II</span>
+            <span class="class-room">Euler 301</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+
+        <!-- 14:00 Row -->
+        <div class="time-label-cell">14:00</div>
+        <div class="grid-slot">
+          <div class="class-block" data-code="ENG205">
+            <span class="class-code">ENG205</span>
+            <span class="class-name">Tech Communication</span>
+            <span class="class-room">Hall B</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot">
+          <div class="class-block" data-code="ENG205">
+            <span class="class-code">ENG205</span>
+            <span class="class-name">Tech Communication</span>
+            <span class="class-room">Hall B</span>
+          </div>
+        </div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot"></div>
+
+        <!-- 16:00 Row (Resolved Slot Target) -->
+        <div class="time-label-cell">16:00</div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot" id="slotTue16"></div>
+        <div class="grid-slot"></div>
+        <div class="grid-slot" id="slotThu16"></div>
+        <div class="grid-slot"></div>
+      </div>
+    </section>
+
+    <!-- Right: Staged Courses & Conflict Resolver Shelf -->
+    <aside class="sidebar-panel">
+      <h2 class="panel-title">Planned Courses (4)</h2>
+
+      <!-- Conflicted Course Card -->
+      <div class="course-card active-conflict" id="cardCS402">
+        <div class="card-top">
+          <span class="course-badge badge-conflict">Time Clash</span>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">4.0 Credits</span>
+        </div>
+        <div class="course-title">CS402: Distributed Systems</div>
+        <div class="course-schedule">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Tue/Thu 11:00 - 12:30 (Section A)
+        </div>
+        <div class="conflict-alert-box">
+          <span class="conflict-text">Clashes with MATH320</span>
+          <button class="btn btn-danger btn-sm" id="btnResolve">Resolve Clashes</button>
+        </div>
+      </div>
+
+      <!-- Normal Course Cards -->
+      <div class="course-card">
+        <div class="card-top">
+          <span class="course-badge badge-core">Core Major</span>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">4.0 Credits</span>
+        </div>
+        <div class="course-title">MATH320: Linear Algebra II</div>
+        <div class="course-schedule">Tue/Thu 11:00 - 12:30</div>
+      </div>
+
+      <div class="course-card">
+        <div class="card-top">
+          <span class="course-badge badge-core">Core Major</span>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">4.0 Credits</span>
+        </div>
+        <div class="course-title">CS301: Advanced Algorithms</div>
+        <div class="course-schedule">Mon/Wed 09:00 - 10:30</div>
+      </div>
+
+      <div class="course-card">
+        <div class="card-top">
+          <span class="course-badge badge-core">General Ed</span>
+          <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">4.0 Credits</span>
+        </div>
+        <div class="course-title">ENG205: Technical Communication</div>
+        <div class="course-schedule">Mon/Wed 14:00 - 15:30</div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Slide-Out Conflict Resolution Drawer (DDR-001) -->
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true">
+    <div class="drawer-container" role="dialog" aria-labelledby="drawerTitle">
+      <div class="drawer-header">
+        <div>
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--brand-primary); text-transform: uppercase;">DDR-001 Drawer</span>
+          <h3 class="drawer-title" id="drawerTitle">Swap Section: CS402</h3>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btnCloseDrawer" aria-label="Close Drawer">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Current <strong>Section A (Tue/Thu 11:00)</strong> collides with <em>MATH320</em>. Select an alternate open section below to resolve the conflict instantly:
+        </p>
+
+        <!-- Current Clashing Section -->
+        <div class="section-option" style="opacity: 0.6; border-color: var(--semantic-danger);">
+          <div style="display: flex; justify-content: space-between;">
+            <strong style="color: var(--semantic-danger);">Section A (Current)</strong>
+            <span style="font-size: 0.75rem; color: var(--semantic-danger);">Collides with MATH320</span>
+          </div>
+          <div style="font-size: 0.8rem;">Tue / Thu 11:00 - 12:30 • Hopper 102</div>
+        </div>
+
+        <!-- Available Clean Section -->
+        <div class="section-option selected" id="optSectionB">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--brand-primary);">Section B (Recommended)</strong>
+            <span class="course-badge" style="background-color: var(--semantic-success-bg); color: var(--semantic-success);">No Conflicts</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-primary); font-weight: 500;">Tue / Thu 16:00 - 17:30 • Hopper 104</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Prof. David Patterson • 18 / 35 Seats Open</div>
+        </div>
+
+        <!-- Available Evening Section -->
+        <div class="section-option" id="optSectionC">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong>Section C</strong>
+            <span class="course-badge" style="background-color: var(--semantic-success-bg); color: var(--semantic-success);">No Conflicts</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-primary);">Mon / Wed 17:00 - 18:30 • Turing 101</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Prof. Leslie Lamport • 6 / 35 Seats Open</div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn btn-secondary" id="btnCancelDrawer">Cancel</button>
+        <button class="btn btn-primary" id="btnApplySwap">Apply & Update Timetable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

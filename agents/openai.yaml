@@ -1,4 +1,4 @@
 interface:
-  display_name: "Premium Frontend Taste"
-  short_description: "Design distinctive, polished production frontends"
-  default_prompt: "Use $design-premium-frontends to redesign or polish a substantial user-facing UI so it fits the product and avoids generic AI styling."
+  display_name: "Product Design & Frontend Architecture"
+  short_description: "End-to-end product design reasoning, UX architecture, and production frontend craft"
+  default_prompt: "Use $design-premium-frontends to discover, architect, design, and implement user-facing digital products and distinctive production frontends."
