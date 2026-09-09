@@ -1,0 +1,8 @@
+{
+  "include": ["scripts", "tests"],
+  "extraPaths": ["scripts"],
+  "pythonPlatform": "Windows",
+  "pythonVersion": "3.14",
+  "pythonPath": "C:/msys64/ucrt64/bin/python.exe",
+  "typeCheckingMode": "basic"
+}
