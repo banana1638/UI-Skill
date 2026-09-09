@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Token Blueprint — Aether Phone 1 Flagship Showcase
+   Archetype: Titanium Hardware Precision × Obsidian Minimalist Luxury
+   ========================================================================== */
+
+:root {
+  /* ── Raw Surface Scales ── */
+  --raw-titanium-0: hsl(220 20% 5%);    /* Deepest space background */
+  --raw-titanium-1: hsl(220 16% 9%);    /* Card and module base */
+  --raw-titanium-2: hsl(220 14% 14%);   /* Raised panels and hovers */
+  --raw-titanium-3: hsl(220 12% 20%);   /* Active chips & borders */
+
+  /* ── Metallic & Brushed Titanium Accents ── */
+  --raw-metal-silver: hsl(220 15% 85%);
+  --raw-metal-shine: hsl(210 25% 95%);
+  --raw-metal-dark: hsl(220 15% 30%);
+
+  /* ── Luminescent Signal Rays ── */
+  --raw-laser-cyan: hsl(190 100% 50%);
+  --raw-laser-cyan-glow: hsla(190, 100%, 50%, 0.35);
+  --raw-quantum-violet: hsl(265 95% 65%);
+  --raw-quantum-glow: hsla(265, 95%, 65%, 0.3);
+  --raw-copper-thermal: hsl(28 90% 55%);
+  --raw-copper-glow: hsla(28, 90%, 55%, 0.35);
+
+  /* ── Neutral Text Ramp ── */
+  --raw-text-100: hsl(0 0% 98%);
+  --raw-text-200: hsl(220 15% 82%);
+  --raw-text-300: hsl(220 10% 60%);
+  --raw-text-400: hsl(220 8% 42%);
+
+  /* ── Semantic System Roles ── */
+  --surface-canvas: var(--raw-titanium-0);
+  --surface-primary: var(--raw-titanium-1);
+  --surface-raised: var(--raw-titanium-2);
+  --surface-overlay: var(--raw-titanium-3);
+
+  --surface-glass: rgba(12, 16, 26, 0.7);
+  --surface-glass-blur: 24px;
+  --surface-glass-saturate: 180%;
+
+  --text-primary: var(--raw-text-100);
+  --text-secondary: var(--raw-text-200);
+  --text-muted: var(--raw-text-300);
+  --text-dim: var(--raw-text-400);
+
+  --accent-cyan: var(--raw-laser-cyan);
+  --accent-cyan-glow: var(--raw-laser-cyan-glow);
+  --accent-violet: var(--raw-quantum-violet);
+  --accent-copper: var(--raw-copper-thermal);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.14);
+  --border-glow: rgba(0, 230, 255, 0.3);
+
+  --focus-ring: var(--raw-laser-cyan);
+
+  /* ── Spacing Scale ── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ── Radii ── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* ── Easing & Motion Curves ── */
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-mechanical: cubic-bezier(0.2, 0.9, 0.3, 1);
+
+  /* ── Typography Scales ── */
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

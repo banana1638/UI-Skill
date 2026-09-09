@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Phone 1 (Ultra Titanium) — 3D Architecture & Anatomy</title>
+  <meta name="description" content="Explore the internal engineering of Aether Phone 1. Aerospaced titanium unibody, 2nm Quantum Neural Silicon, Vapor Chamber cooling, and periscope optics in an interactive 3D exploded anatomy view.">
+
+  <!-- Typography: Space Grotesk + Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Atmospheric Laser Caustics -->
+  <div class="ambient-laser-glow ambient-laser-glow--cyan" aria-hidden="true"></div>
+  <div class="ambient-laser-glow ambient-laser-glow--violet" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       NAVIGATION BAR
+       ════════════════════════════════════════════════════════════════════ -->
+  <header class="nav-header">
+    <a href="#" class="nav-brand" aria-label="Aether Hardware Home">
+      <div class="nav-logo-icon">Æ</div>
+      <span class="nav-brand-title">AETHER PHONE 1</span>
+      <span class="nav-tag">TITANIUM</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary Navigation">
+      <a href="#hero" class="nav-link active">Overview</a>
+      <a href="#anatomy" class="nav-link">3D Anatomy</a>
+      <a href="#silicon" class="nav-link">Neural Silicon</a>
+      <a href="#optics" class="nav-link">Periscope Optics</a>
+      <a href="#configurator" class="nav-link">Finishes</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="btn-preorder" type="button" id="btn-preorder-top">
+        <span>Pre-Order from $1,199</span>
+        <span>→</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       HERO SECTION — 3D FLAGSHIP HARDWARE PRESENTATION
+       ════════════════════════════════════════════════════════════════════ -->
+  <main>
+    <section class="hero-section" id="hero">
+      <div class="blueprint-grid-bg" aria-hidden="true"></div>
+
+      <div class="hero-badge">
+        <span>✦ AEROSPACE GRADE 5 TITANIUM UNIBODY</span>
+      </div>
+
+      <h1 class="hero-title">Extreme Engineering. Made Visible.</h1>
+      <p class="hero-subtitle">Every micron sculpted for raw performance. Powered by the 2nm Aether X1 Neural Silicon and a modular periscope quad-optic array.</p>
+
+      <div class="hero-visual-frame">
+        <img src="assets/phone_hero.jpg" alt="Aether Phone 1 Front and Back in Brushed Titanium" class="hero-img">
+        <div class="hero-floating-specs">
+          <div class="spec-pill">
+            <span class="spec-pill-label">CHASSIS MATERIAL</span>
+            <span class="spec-pill-value">Grade 5 Titanium</span>
+          </div>
+          <div class="spec-pill">
+            <span class="spec-pill-label">COMPUTE ENGINE</span>
+            <span class="spec-pill-value">2nm Aether X1</span>
+          </div>
+          <div class="spec-pill">
+            <span class="spec-pill-label">DISPLAY MATRIX</span>
+            <span class="spec-pill-value">Tandem OLED 120Hz</span>
+          </div>
+          <div class="spec-pill">
+            <span class="spec-pill-label">OPTICAL ZOOM</span>
+            <span class="spec-pill-value">10× Periscope Prism</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         INTERACTIVE 3D EXPLODED ANATOMY WORKBENCH
+         ════════════════════════════════════════════════════════════════════ -->
+    <section class="anatomy-section" id="anatomy">
+      <div class="blueprint-grid-bg" aria-hidden="true"></div>
+
+      <div class="section-tag">3D DISASSEMBLY & SCHEMATICS</div>
+      <h2 class="section-heading">Internal Exploded Anatomy</h2>
+      <p class="section-desc">Click any component hotspot on the 3D exploded view to isolate and inspect its physical layer, metallurgy, and thermal engineering.</p>
+
+      <div class="exploded-workbench">
+
+        <!-- Toolbar & Filter Tabs -->
+        <div class="workbench-toolbar">
+          <div class="toolbar-title-box">
+            <span class="live-pulse-dot" aria-hidden="true"></span>
+            <span class="toolbar-label">INTERACTIVE BLUEPRINT EXPLORER</span>
+          </div>
+
+          <div class="layer-nav-tabs" role="tablist" aria-label="Exploded Layer Selector">
+            <button class="layer-tab-btn active" role="tab" aria-selected="true" data-layer="all">All Layers</button>
+            <button class="layer-tab-btn" role="tab" aria-selected="false" data-layer="soc">Aether X1 Silicon</button>
+            <button class="layer-tab-btn" role="tab" aria-selected="false" data-layer="optics">Periscope Optics</button>
+            <button class="layer-tab-btn" role="tab" aria-selected="false" data-layer="vc">VC Cooling</button>
+            <button class="layer-tab-btn" role="tab" aria-selected="false" data-layer="screen">Tandem OLED</button>
+            <button class="layer-tab-btn" role="tab" aria-selected="false" data-layer="frame">Titanium Frame</button>
+          </div>
+        </div>
+
+        <!-- Exploded Viewport with Hotspots -->
+        <div class="exploded-canvas-viewport">
+          <img src="assets/phone_exploded.jpg" alt="Technical 3D Exploded View of Smartphone Internal Layers" class="exploded-render-img" id="exploded-img">
+
+          <!-- Hotspot Pins -->
+          <button class="hotspot-pin hotspot--screen" data-target="screen" type="button" aria-label="Inspect Tandem OLED Screen"></button>
+          <button class="hotspot-pin hotspot--camera" data-target="optics" type="button" aria-label="Inspect Periscope Camera Array"></button>
+          <button class="hotspot-pin hotspot--soc active" data-target="soc" type="button" aria-label="Inspect Aether X1 Neural SoC"></button>
+          <button class="hotspot-pin hotspot--vc" data-target="vc" type="button" aria-label="Inspect Vapor Chamber Cooling"></button>
+          <button class="hotspot-pin hotspot--battery" data-target="battery" type="button" aria-label="Inspect Graphite Battery Pack"></button>
+          <button class="hotspot-pin hotspot--frame" data-target="frame" type="button" aria-label="Inspect Titanium Unibody Rear Frame"></button>
+        </div>
+
+        <!-- Detailed Inspector Deck -->
+        <div class="anatomy-inspector-deck" id="inspector-deck">
+          <div class="inspector-text-block">
+            <span class="inspector-tag" id="deck-tag">LAYER 03 // SILICON ARCHITECTURE</span>
+            <h3 class="inspector-title" id="deck-title">Aether X1 Neural Processing Unit (2nm)</h3>
+            <p class="inspector-body" id="deck-desc">The industry's first 2nm quantum architecture with 24-core neural tensor engine. Capable of running 70B parameter multimodal AI models locally at 48 tokens/second with zero cloud latency.</p>
+          </div>
+
+          <div class="inspector-specs-grid">
+            <div class="sub-spec-card">
+              <span class="sub-spec-label" id="deck-spec1-label">FABRICATION</span>
+              <strong class="sub-spec-val" id="deck-spec1-val">2nm TSMC GAA</strong>
+            </div>
+            <div class="sub-spec-card">
+              <span class="sub-spec-label" id="deck-spec2-label">AI COMPUTE</span>
+              <strong class="sub-spec-val" id="deck-spec2-val">68 TOPS NPU</strong>
+            </div>
+            <div class="sub-spec-card">
+              <span class="sub-spec-label" id="deck-spec3-label">PEAK CLOCK</span>
+              <strong class="sub-spec-val" id="deck-spec3-val">4.35 GHz</strong>
+            </div>
+            <div class="sub-spec-card">
+              <span class="sub-spec-label" id="deck-spec4-label">MEMORY BUS</span>
+              <strong class="sub-spec-val" id="deck-spec4-val">LPDDR5X 10.7Gbps</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         FINISH & MATERIAL CONFIGURATOR
+         ════════════════════════════════════════════════════════════════════ -->
+    <section class="configurator-section" id="configurator">
+      <div class="section-tag">METALLURGY & TEXTURE</div>
+      <h2 class="section-heading">Formed in Aerospace Titanium</h2>
+      <p class="section-desc">PVD vapor deposition creates an ultra-durable, tactile ceramic finish that resists fingerprints and structural micro-fractures.</p>
+
+      <div class="color-switcher-bar" role="radiogroup" aria-label="Select Titanium Finish">
+        <button class="color-swatch-btn active" role="radio" aria-checked="true" data-finish="titanium">
+          <span class="swatch-circle swatch--titanium"></span>
+          <span>Space Titanium</span>
+        </button>
+        <button class="color-swatch-btn" role="radio" aria-checked="false" data-finish="obsidian">
+          <span class="swatch-circle swatch--obsidian"></span>
+          <span>Stealth Obsidian</span>
+        </button>
+        <button class="color-swatch-btn" role="radio" aria-checked="false" data-finish="silver">
+          <span class="swatch-circle swatch--silver"></span>
+          <span>Radiant Silver</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         FOOTER CTA
+         ════════════════════════════════════════════════════════════════════ -->
+    <footer class="footer-cta">
+      <h2 class="footer-title">Ready for the Next Paradigm?</h2>
+      <p class="section-desc" style="margin: 0 auto;">Pre-order includes titanium charging dock and 2-year Aether Care warranty.</p>
+      <div class="footer-btn-row">
+        <button class="btn-preorder" type="button" style="height: 48px; padding: 0 28px; font-size: 0.9375rem;">
+          <span>Pre-Order Aether Phone 1</span>
+          <span>→</span>
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

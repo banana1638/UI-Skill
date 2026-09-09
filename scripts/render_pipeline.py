@@ -162,6 +162,50 @@ class RenderPipeline:
         self.output_root = Path(output_root)
         self.output_root.mkdir(parents=True, exist_ok=True)
 
+    async def _render_viewport(
+        self,
+        browser: Any,
+        url: str,
+        vp: ViewportConfig,
+        session_dir: Path,
+        wait_time_ms: int,
+    ) -> Dict[str, Any]:
+        """Renders a single viewport in an isolated browser context."""
+        context = await browser.new_context(
+            viewport={"width": vp.width, "height": vp.height},
+            device_scale_factor=vp.device_scale_factor,
+            is_mobile=vp.is_mobile,
+        )
+        page = await context.new_page()
+        vp_errors: List[str] = []
+        page.on("pageerror", lambda err: vp_errors.append(str(err)))
+        page.on("console", lambda msg: vp_errors.append(f"[{msg.type}] {msg.text}") if msg.type == "error" else None)
+
+        try:
+            await page.goto(url, wait_until="networkidle", timeout=15000)
+            if wait_time_ms > 0:
+                await asyncio.sleep(wait_time_ms / 1000.0)
+
+            screenshot_path = session_dir / f"{vp.name}.png"
+            await page.screenshot(path=str(screenshot_path), full_page=False)
+
+            with open(screenshot_path, "rb") as img_f:
+                b64 = base64.b64encode(img_f.read()).decode("utf-8")
+
+            dom_metrics = None
+            if vp.name == "desktop":
+                dom_metrics = await page.evaluate(DOM_INSPECTOR_SCRIPT)
+
+            return {
+                "name": vp.name,
+                "screenshot_path": str(screenshot_path),
+                "b64": b64,
+                "dom_metrics": dom_metrics,
+                "errors": vp_errors,
+            }
+        finally:
+            await context.close()
+
     async def render_target(
         self,
         target_path_or_url: str,
@@ -197,41 +241,33 @@ class RenderPipeline:
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
-                for vp in viewports:
-                    context = await browser.new_context(
-                        viewport={"width": vp.width, "height": vp.height},
-                        device_scale_factor=vp.device_scale_factor,
-                        is_mobile=vp.is_mobile,
-                    )
-                    page = await context.new_page()
-
-                    # Listen for console errors
-                    page.on("pageerror", lambda err: result.console_errors.append(str(err)))
-                    page.on("console", lambda msg: result.console_errors.append(f"[{msg.type}] {msg.text}") if msg.type == "error" else None)
-
-                    await page.goto(url, wait_until="networkidle", timeout=15000)
-                    if wait_time_ms > 0:
-                        await asyncio.sleep(wait_time_ms / 1000.0)
-
-                    screenshot_path = session_dir / f"{vp.name}.png"
-                    await page.screenshot(path=str(screenshot_path), full_page=False)
-
-                    result.screenshots[vp.name] = str(screenshot_path)
-
-                    # Encode to base64 for LLM inspection
-                    with open(screenshot_path, "rb") as img_f:
-                        result.screenshot_base64[vp.name] = base64.b64encode(img_f.read()).decode("utf-8")
-
-                    # Extract DOM inspection metrics from desktop view
-                    if vp.name == "desktop":
-                        dom_metrics = await page.evaluate(DOM_INSPECTOR_SCRIPT)
-                        result.dom_metrics = dom_metrics
-                        result.color_metrics = self._analyze_colors(dom_metrics.get("colors", {}), dom_metrics.get("backgroundColors", {}))
-
-                    await context.close()
-
+                tasks = [
+                    self._render_viewport(browser, url, vp, session_dir, wait_time_ms)
+                    for vp in viewports
+                ]
+                vp_results = await asyncio.gather(*tasks, return_exceptions=True)
                 await browser.close()
-                result.success = True
+
+                has_desktop = False
+                for vp_res in vp_results:
+                    if isinstance(vp_res, Exception):
+                        result.console_errors.append(f"Viewport render error: {vp_res}")
+                    elif isinstance(vp_res, dict):
+                        vp_name = vp_res["name"]
+                        result.screenshots[vp_name] = vp_res["screenshot_path"]
+                        result.screenshot_base64[vp_name] = vp_res["b64"]
+                        result.console_errors.extend(vp_res.get("errors", []))
+                        if vp_res.get("dom_metrics"):
+                            has_desktop = True
+                            result.dom_metrics = vp_res["dom_metrics"]
+                            result.color_metrics = self._analyze_colors(
+                                vp_res["dom_metrics"].get("colors", {}),
+                                vp_res["dom_metrics"].get("backgroundColors", {}),
+                            )
+
+                result.success = len(result.screenshots) > 0
+                if not result.success:
+                    result.error_message = "All viewports failed to render."
         except Exception as exc:
             result.success = False
             result.error_message = str(exc)

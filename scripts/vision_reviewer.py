@@ -12,12 +12,54 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import BaseModel, Field
+try:
+    from pydantic import BaseModel, Field, ValidationError
+except ImportError:
+    class BaseModel:
+        def __init__(self, **kwargs):
+            # Apply class defaults for missing fields
+            for cls_attr, default_val in self.__class__.__dict__.items():
+                if not cls_attr.startswith("_") and not callable(default_val):
+                    setattr(self, cls_attr, default_val)
+            for k, v in kwargs.items():
+                setattr(self, k, v)
+
+        def model_dump(self) -> Dict[str, Any]:
+            res = {}
+            for k, v in self.__dict__.items():
+                if isinstance(v, list):
+                    res[k] = [item.model_dump() if hasattr(item, "model_dump") else item for item in v]
+                elif hasattr(v, "model_dump"):
+                    res[k] = v.model_dump()
+                else:
+                    res[k] = v
+            return res
+
+        def dict(self) -> Dict[str, Any]:
+            return self.model_dump()
+
+        @classmethod
+        def model_validate_json(cls, json_str: str):
+            data = json.loads(json_str)
+            return cls(**data)
+
+        def __repr__(self):
+            return f"{self.__class__.__name__}({self.__dict__})"
+
+    def Field(default=None, **kwargs):
+        if "default_factory" in kwargs:
+            return kwargs["default_factory"]()
+        return default
+
+    class ValidationError(Exception):
+        """Fallback ValidationError when pydantic is not installed."""
+        pass
 
 
 class CategoryScore(BaseModel):
@@ -37,6 +79,16 @@ class ActionableFix(BaseModel):
 class ReviewReport(BaseModel):
     overall_score: float = Field(..., ge=0.0, le=10.0)
     verdict: Literal["PASS", "NEEDS_REVISION", "FAIL"]
+    reviewer_source: Literal["anthropic", "openai", "gemini", "mock"] = Field(
+        default="mock",
+        description="Source of review: live LLM or heuristic mock critique"
+    )
+    confidence: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=1.0,
+        description="Confidence level of critique (mock gives lower confidence, e.g. 0.4)"
+    )
     layer_scores: List[CategoryScore] = Field(
         default_factory=list,
         description="Scores for: 1. Rule & Accessibility, 2. Product Reasoning & IA, 3. Aesthetic Taste & Freshness"
@@ -119,6 +171,8 @@ def generate_mock_critique(dom_metrics: Dict[str, Any], color_metrics: Dict[str,
     return ReviewReport(
         overall_score=score,
         verdict=verdict,
+        reviewer_source="mock",
+        confidence=0.4,
         layer_scores=[
             CategoryScore(category="Rule & Spec Integrity", score=8.0 if not violations else 5.0, reasoning="Automated DOM rule checks evaluated."),
             CategoryScore(category="Product Reasoning & IA", score=8.5, reasoning="Primary CTA and component hierarchy evaluated."),
@@ -136,6 +190,23 @@ class VisionReviewer:
         self.provider = provider
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
 
+    @staticmethod
+    def _extract_json(text: str) -> str:
+        """Robustly extracts JSON substring from markdown fences or surrounding commentary."""
+        text = text.strip()
+        fence_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", text, re.IGNORECASE)
+        if fence_match:
+            return fence_match.group(1).strip()
+        start = text.find("{")
+        end = text.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            return text[start:end+1].strip()
+        return text
+
+    def _has_module(self, mod_name: str) -> bool:
+        import importlib.util
+        return importlib.util.find_spec(mod_name) is not None
+
     def review(
         self,
         desktop_b64: Optional[str],
@@ -144,10 +215,10 @@ class VisionReviewer:
         color_metrics: Dict[str, Any],
         context_prompt: str = "Evaluate this web interface for premium product design quality.",
     ) -> ReviewReport:
-        # Check if live LLM provider is configured
-        if self.provider == "anthropic" or (self.provider == "auto" and os.getenv("ANTHROPIC_API_KEY")):
+        # Check if live LLM provider is configured and installed
+        if (self.provider == "anthropic" or (self.provider == "auto" and os.getenv("ANTHROPIC_API_KEY"))) and self._has_module("anthropic"):
             return self._review_with_anthropic(desktop_b64, mobile_b64, dom_metrics, color_metrics, context_prompt)
-        elif self.provider == "openai" or (self.provider == "auto" and os.getenv("OPENAI_API_KEY")):
+        elif (self.provider == "openai" or (self.provider == "auto" and os.getenv("OPENAI_API_KEY"))) and self._has_module("openai"):
             return self._review_with_openai(desktop_b64, mobile_b64, dom_metrics, color_metrics, context_prompt)
         else:
             # Fallback to smart rule-based mock reviewer
@@ -162,9 +233,15 @@ class VisionReviewer:
         context_prompt: str,
     ) -> ReviewReport:
         try:
-            import anthropic
+            import importlib
+            anthropic = importlib.import_module("anthropic")
+        except ImportError:
+            print("⚠️ Anthropic library not installed, falling back to mock critique.", file=sys.stderr)
+            return generate_mock_critique(dom_metrics, color_metrics)
+
+        try:
             client = anthropic.Anthropic(api_key=self.api_key)
-            
+
             content_blocks: List[Any] = [
                 {
                     "type": "text",
@@ -182,17 +259,43 @@ class VisionReviewer:
                     "source": {"type": "base64", "media_type": "image/png", "data": mobile_b64}
                 })
 
-            response = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=2500,
-                system=SYSTEM_PROMPT + "\nRespond ONLY with a valid JSON matching the ReviewReport schema.",
-                messages=[{"role": "user", "content": content_blocks}]
-            )
-            raw_text = response.content[0].text
-            json_text = raw_text.strip().strip("`").removeprefix("json").strip()
-            return ReviewReport.model_validate_json(json_text)
+            messages: List[Dict[str, Any]] = [{"role": "user", "content": content_blocks}]
+            last_error = None
+
+            # Retry loop: distinguish recoverable JSON/schema issues from unrecoverable network/auth errors
+            for attempt in range(3):
+                try:
+                    response = client.messages.create(
+                        model="claude-3-5-sonnet-20241022",
+                        max_tokens=2500,
+                        system=SYSTEM_PROMPT + "\nRespond ONLY with valid JSON matching the ReviewReport schema.",
+                        messages=messages,
+                    )
+                    raw_text = response.content[0].text
+                    json_text = self._extract_json(raw_text)
+                    report = ReviewReport.model_validate_json(json_text)
+                    report.reviewer_source = "anthropic"
+                    report.confidence = 0.95
+                    return report
+                except (json.JSONDecodeError, ValidationError) as exc:
+                    last_error = exc
+                    # Recoverable format error: append assistant text and feedback prompt to retry
+                    raw_resp = raw_text if 'raw_text' in locals() else ""
+                    messages.append({"role": "assistant", "content": raw_resp})
+                    messages.append({
+                        "role": "user",
+                        "content": f"Your previous JSON failed validation: {exc}. Return ONLY corrected valid JSON matching the ReviewReport schema without markdown codeblocks or trailing comments."
+                    })
+                    continue
+                except Exception as exc:
+                    # Unrecoverable (e.g. auth failure, rate limit, socket error): break immediately
+                    last_error = exc
+                    break
+
+            print(f"⚠️ Anthropic review failed after retries ({last_error}), falling back to local critique engine.", file=sys.stderr)
+            return generate_mock_critique(dom_metrics, color_metrics)
         except Exception as exc:
-            print(f"⚠️ Anthropic API call failed ({exc}), falling back to local critique engine.", file=sys.stderr)
+            print(f"⚠️ Anthropic client execution failed ({exc}), falling back to local critique engine.", file=sys.stderr)
             return generate_mock_critique(dom_metrics, color_metrics)
 
     def _review_with_openai(
@@ -204,9 +307,10 @@ class VisionReviewer:
         context_prompt: str,
     ) -> ReviewReport:
         try:
-            import openai
+            import importlib
+            openai = importlib.import_module("openai")
             client = openai.OpenAI(api_key=self.api_key)
-            
+
             messages_content: List[Any] = [
                 {
                     "type": "text",
@@ -232,7 +336,12 @@ class VisionReviewer:
                 ],
                 response_format=ReviewReport,
             )
-            return response.choices[0].message.parsed
+            report = response.choices[0].message.parsed
+            if report:
+                report.reviewer_source = "openai"
+                report.confidence = 0.95
+                return report
+            return generate_mock_critique(dom_metrics, color_metrics)
         except Exception as exc:
             print(f"⚠️ OpenAI API call failed ({exc}), falling back to local critique engine.", file=sys.stderr)
             return generate_mock_critique(dom_metrics, color_metrics)
@@ -276,7 +385,7 @@ def main():
     )
 
     print("\n" + "=" * 60)
-    print(f"🎯 Overall Score: {report.overall_score}/10 | Verdict: {report.verdict}")
+    print(f"🎯 Overall Score: {report.overall_score}/10 | Verdict: {report.verdict} | Source: {report.reviewer_source} (Confidence: {report.confidence:.1f})")
     print("=" * 60)
     print(f"📌 Cliché Audit: {report.cliche_risk_assessment}\n")
     print("🛠️ Actionable Fixes:")
