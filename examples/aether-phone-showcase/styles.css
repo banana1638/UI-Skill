@@ -255,6 +255,7 @@ svg {
   margin-bottom: var(--space-4);
   background: linear-gradient(180deg, #ffffff 40%, hsl(220 15% 65%) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
