@@ -18,12 +18,26 @@ import os
 import subprocess
 import sys
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, is_dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from render_pipeline import RenderPipeline, RenderResult
 from vision_reviewer import ActionableFix, ReviewReport, VisionReviewer
+from patch_generator import PatchGenerator, PatchResult
+
+
+def serialize_item(item: Any) -> Any:
+    """Serializes a dataclass or Pydantic model into a dictionary safely."""
+    if is_dataclass(item) and not isinstance(item, type):
+        return asdict(item)
+    if hasattr(item, "model_dump"):
+        return item.model_dump()
+    if hasattr(item, "dict"):
+        return item.dict()
+    if isinstance(item, dict):
+        return item
+    return getattr(item, "__dict__", str(item))
 
 
 @dataclass
@@ -31,10 +45,14 @@ class LoopIterationRecord:
     iteration: int
     score: float
     verdict: str
+    reviewer_source: str
+    confidence: float
     screenshots: Dict[str, str]
     violations: List[str]
     fixes_proposed: List[Dict[str, Any]]
     circuit_breaker_triggered: bool = False
+    patch_applied: bool = False
+    patch_diff: str = ""
     notes: str = ""
 
 
@@ -52,6 +70,7 @@ class DesignFeedbackLoop:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.renderer = RenderPipeline(output_root=str(self.output_dir / "renders"))
         self.reviewer = VisionReviewer(provider=reviewer_provider)
+        self.patcher = PatchGenerator(provider=reviewer_provider)
 
     def run_static_lint(self) -> Tuple[bool, List[str]]:
         """Runs check-motion-safety.js if node is present."""
@@ -102,7 +121,7 @@ class DesignFeedbackLoop:
             )
 
             scores_trajectory.append(report.overall_score)
-            print(f"  🎯 Iteration Score: {report.overall_score:.1f}/10 ({report.verdict})")
+            print(f"  🎯 Iteration Score: {report.overall_score:.1f}/10 ({report.verdict}) | Source: {report.reviewer_source} (Conf: {report.confidence:.1f})")
 
             # Check for score oscillation (e.g. 7.5 -> 7.0 -> 7.5)
             oscillation_detected = False
@@ -114,9 +133,11 @@ class DesignFeedbackLoop:
                 iteration=round_idx,
                 score=report.overall_score,
                 verdict=report.verdict,
+                reviewer_source=report.reviewer_source,
+                confidence=report.confidence,
                 screenshots=render_res.screenshots,
                 violations=report.violations,
-                fixes_proposed=[asdict(f) for f in report.actionable_fixes],
+                fixes_proposed=[serialize_item(f) for f in report.actionable_fixes],
                 circuit_breaker_triggered=oscillation_detected,
                 notes=report.summary
             )
@@ -124,6 +145,8 @@ class DesignFeedbackLoop:
 
             # Success threshold reached
             if report.overall_score >= self.target_score and report.verdict == "PASS":
+                if report.reviewer_source == "mock":
+                    print("  ⚠️ Passed only under heuristic mock reviewer — recommend re-running with a live API key before shipping.")
                 print(f"  ✨ Design passed target bar on iteration {round_idx}!")
                 break
 
@@ -135,6 +158,24 @@ class DesignFeedbackLoop:
             print("  💡 Top Fixes Required for next iteration:")
             for fix in report.actionable_fixes[:3]:
                 print(f"     - [{fix.severity}] {fix.target_element}: {fix.suggested_fix}")
+
+            # Priority 1: Apply fixes to target file to close the loop
+            target_path = Path(target_html_or_url)
+            if target_path.exists() and target_path.is_file():
+                print(f"  🛠️ Synthesizing and applying code patches via Patch Generator...")
+                patch_res: PatchResult = self.patcher.apply_fixes(target_path, report.actionable_fixes)
+                if not patch_res.success:
+                    print(f"  ⚠️ Patch failed: {patch_res.error}. Halting loop to avoid corrupting target file.")
+                    break
+                elif patch_res.diff:
+                    rec.patch_applied = True
+                    rec.patch_diff = patch_res.diff
+                    diff_line_count = len(patch_res.diff.splitlines())
+                    print(f"  ✅ Patch applied successfully ({diff_line_count} diff lines). Advancing to re-render...")
+                else:
+                    print("  ℹ️ No modifications made by patch generator.")
+            else:
+                print("  ℹ️ Target is a remote URL or non-file path; automatic patching skipped.")
 
         # Save loop final report
         summary_path = session_dir / "loop_summary.json"
@@ -173,9 +214,18 @@ class DesignFeedbackLoop:
         for item in summary["history"]:
             lines.extend([
                 f"### Iteration {item['iteration']} (Score: {item['score']}/10 - {item['verdict']})",
+                f"- **Reviewer**: `{item.get('reviewer_source', 'unknown')}` (Confidence: {item.get('confidence', 1.0)})",
                 f"- **Summary**: {item['notes']}",
                 f"- **Violations**: {len(item['violations'])} issue(s)",
+                f"- **Patch Applied**: `{'Yes' if item.get('patch_applied') else 'No'}`",
             ])
+            if item.get("patch_diff"):
+                lines.extend([
+                    "- **Applied Code Diff**:",
+                    "```diff",
+                    item["patch_diff"].strip(),
+                    "```",
+                ])
             if item.get("fixes_proposed"):
                 lines.append(f"- **Suggested Fixes**:")
                 for fix in item["fixes_proposed"][:4]:

@@ -9,10 +9,24 @@
 ```
 scripts/
 ├── check-motion-safety.js   # [第1层] 静态规则与动画无障碍 Linter (毫秒级)
-├── render_pipeline.py       # [第2层] Playwright 真实渲染与计算样式/DOM提取 (秒级)
-├── vision_reviewer.py       # [第3层] 多模态视觉审美与交互设计评审器 (分钟级)
-├── design_loop.py           # [闭环控制器] 生成 → 渲染 → 评审 → 修正闭环 + 熔断保护
+├── render_pipeline.py       # [第2层] Playwright 并发渲染与计算样式/DOM提取 (秒级)
+├── vision_reviewer.py       # [第3层] 多模态视觉审美与交互设计评审器 (带自纠错重试与溯源)
+├── patch_generator.py       # [第4层] 补丁合成器 (结构完整性防御 + diff 生成与写入)
+├── design_loop.py           # [闭环控制器] 生成 → 渲染 → 评审 → 修正真闭环 + 熔断保护
 └── convergence_test.py      # [健康度仪表盘] 跨场景色相散布与信息熵测试
+tests/
+├── test_color_utils.py      # 色彩转换与解析纯函数单测 (P5)
+├── test_patch_generator.py  # 补丁生成与防御校验单测 (P1)
+└── test_vision_reviewer.py  # 评审源溯源与 JSON 提取单测 (P2/P3)
+```
+
+---
+
+## 运行自动化测试套件
+
+无需外部三方库即可在标准 Python 环境下快速运行全量单测：
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 ---
