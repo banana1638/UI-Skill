@@ -14,6 +14,10 @@ scripts/
 ├── patch_generator.py       # [第4层] 补丁合成器 (结构完整性防御 + diff 生成与写入)
 ├── design_loop.py           # [闭环控制器] 生成 → 渲染 → 评审 → 修正真闭环 + 熔断保护
 └── convergence_test.py      # [健康度仪表盘] 跨场景色相散布与信息熵测试
+├── frontend_quality_gate.py # [语义门禁] 静态 HTML、标签、图片、输入和弹窗契约检查
+├── visual_regression.py     # [视觉回归] 命名 PNG 基线与候选图的像素差异比较
+├── performance_budget.py    # [性能门禁] 资源传输和 Web Vitals 预算评估
+└── skill_eval.py            # [技能评估] 固定场景合同校验器
 tests/
 ├── test_color_utils.py      # 色彩转换与解析纯函数单测 (P5)
 ├── test_patch_generator.py  # 补丁生成与防御校验单测 (P1)
@@ -72,3 +76,33 @@ python scripts/design_loop.py examples/landing-page-editorial/index.html --max-i
 python scripts/convergence_test.py
 ```
 执行后将生成终端彩色报告以及可视化的 `artifacts/convergence/convergence_dashboard.html`。
+
+### 6. 运行静态无障碍与交互契约检查
+```bash
+python scripts/frontend_quality_gate.py examples/landing-page-editorial/index.html --strict
+```
+
+此检查验证基础语义（语言、图片替代文本、输入标签、按钮名称、弹窗名称）。它不替代真实浏览器的键盘路径、屏幕阅读器或触摸测试。
+
+### 7. 创建和比较视觉基线
+```bash
+python scripts/render_pipeline.py examples/landing-page-editorial/index.html --output artifacts/baseline
+python scripts/render_pipeline.py examples/landing-page-editorial/index.html --output artifacts/candidate
+python scripts/visual_regression.py artifacts/baseline/<render-id> artifacts/candidate/<render-id> --threshold 0.02
+```
+
+基线与候选必须使用相同浏览器、字体、视口、比例和确定性数据。阈值通过不代表无需人工审阅。
+
+### 8. 审核性能预算
+```bash
+python scripts/performance_budget.py artifacts/renders/<render-id>/summary.json --strict
+```
+
+渲染摘要现在记录资源传输、LCP、CLS 和 INP（浏览器支持时）。项目有自己的预算时，使用 `--budget path/to/budget.json` 覆盖默认值。
+
+### 9. 验证 Skill 场景合同
+```bash
+python scripts/skill_eval.py evals/frontend-contracts.json --strict
+```
+
+该命令检查场景的结构和覆盖范围；它不是 agent 行为的替代测试。实际评估时应逐项执行场景，并保存对应证据。

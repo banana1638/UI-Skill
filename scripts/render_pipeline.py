@@ -42,6 +42,32 @@ DEFAULT_VIEWPORTS = [
 ]
 
 
+PERFORMANCE_OBSERVER_SCRIPT = """
+(() => {
+  window.__designPerformance = { lcp: null, cls: 0, inp: null };
+  try {
+    new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      const last = entries[entries.length - 1];
+      if (last) window.__designPerformance.lcp = Math.round(last.startTime);
+    }).observe({ type: 'largest-contentful-paint', buffered: true });
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (!entry.hadRecentInput) window.__designPerformance.cls += entry.value;
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        window.__designPerformance.inp = Math.max(window.__designPerformance.inp || 0, Math.round(entry.duration));
+      }
+    }).observe({ type: 'event', buffered: true, durationThreshold: 16 });
+  } catch (_) {
+    // Unsupported observers are reported as null rather than guessed.
+  }
+})();
+"""
+
+
 @dataclass
 class ColorTokenMetric:
     raw_value: str
@@ -59,6 +85,7 @@ class RenderResult:
     screenshot_base64: Dict[str, str] = field(default_factory=dict)
     dom_metrics: Dict[str, Any] = field(default_factory=dict)
     color_metrics: Dict[str, Any] = field(default_factory=dict)
+    performance_metrics: Dict[str, Any] = field(default_factory=dict)
     console_errors: List[str] = field(default_factory=list)
     success: bool = True
     error_message: Optional[str] = None
@@ -128,6 +155,23 @@ DOM_INSPECTOR_SCRIPT = """
         hasHorizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         bodyScrollWidth: document.documentElement.scrollWidth,
         viewportWidth: document.documentElement.clientWidth,
+        performanceMetrics: (() => {
+            const resources = performance.getEntriesByType('resource');
+            const transferByType = {};
+            for (const resource of resources) {
+                const type = resource.initiatorType || 'other';
+                transferByType[type] = (transferByType[type] || 0) + (resource.transferSize || 0);
+            }
+            const navigation = performance.getEntriesByType('navigation')[0];
+            return {
+                transferByType,
+                totalTransferBytes: Object.values(transferByType).reduce((sum, value) => sum + value, 0),
+                lcpMs: window.__designPerformance?.lcp ?? null,
+                cls: Number((window.__designPerformance?.cls ?? 0).toFixed(4)),
+                inpMs: window.__designPerformance?.inp ?? null,
+                domContentLoadedMs: navigation ? Math.round(navigation.domContentLoadedEventEnd) : null,
+            };
+        })(),
     };
 
     // Scan all visible elements
@@ -182,6 +226,7 @@ class RenderPipeline:
         page.on("console", lambda msg: vp_errors.append(f"[{msg.type}] {msg.text}") if msg.type == "error" else None)
 
         try:
+            await page.add_init_script(PERFORMANCE_OBSERVER_SCRIPT)
             await page.goto(url, wait_until="networkidle", timeout=15000)
             if wait_time_ms > 0:
                 await asyncio.sleep(wait_time_ms / 1000.0)
@@ -260,6 +305,7 @@ class RenderPipeline:
                         if vp_res.get("dom_metrics"):
                             has_desktop = True
                             result.dom_metrics = vp_res["dom_metrics"]
+                            result.performance_metrics = vp_res["dom_metrics"].get("performanceMetrics", {})
                             result.color_metrics = self._analyze_colors(
                                 vp_res["dom_metrics"].get("colors", {}),
                                 vp_res["dom_metrics"].get("backgroundColors", {}),
@@ -332,6 +378,7 @@ def main():
         print(f"📸 Screenshots: {list(result.screenshots.keys())}")
         print(f"🎨 Saturated Hue Std Dev: {result.color_metrics.get('hue_std_dev', 0)}°")
         print(f"🔤 Font Families Detected: {result.dom_metrics.get('fontFamilies', [])}")
+        print(f"⚡ Performance Metrics: {result.performance_metrics}")
     else:
         print(f"❌ Render failed: {result.error_message}", file=sys.stderr)
         sys.exit(1)
