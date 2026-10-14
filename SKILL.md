@@ -195,7 +195,7 @@ Use scripts when they add observable confidence and their prerequisites are avai
 - **Accessibility gate:** `python scripts/frontend_quality_gate.py <html-file> --strict` for a static semantic and interaction-contract scan. For interactive pages, also walk the primary flow by keyboard in a real browser.
 - **Visual regression:** `python scripts/visual_regression.py <baseline-dir> <candidate-dir> --threshold 0.02` after rendering the agreed viewport and state matrix. A reviewed screenshot is not a visual-regression pass.
 - **Performance budget:** `python scripts/performance_budget.py <path-to-summary.json>` after rendering a new or materially changed page. Use the project budget when present; otherwise report the default budget as a starting point, not a universal standard.
-- **Skill-contract evaluation:** `python scripts/skill_eval.py evals/frontend-contracts.json --strict` when changing this skill, its toolchain, or its core policies.
+
 
 If a dependency or browser is unavailable, fall back to manual inspection and explicitly report that validation gap. Do not silently substitute a mock result for a visual review.
 

@@ -1,0 +1,217 @@
+/* ==========================================================================
+   Design Token Blueprint — Azure Horizon (Coastal Landscape Sanctuary)
+   Architecture: Raw Scales → Semantic Roles → Atmospheric Dynamic States
+   Complies with design-premium-frontends 3-Tier Token Specification
+   ========================================================================== */
+
+:root {
+  /* ── 1. Raw Scales (Primitive Colors) ── */
+  --raw-slate-950:  hsl(222 47% 7%);
+  --raw-slate-900:  hsl(222 47% 11%);
+  --raw-slate-800:  hsl(217 33% 17%);
+  --raw-slate-700:  hsl(215 25% 27%);
+  --raw-slate-400:  hsl(215 20% 65%);
+  --raw-slate-200:  hsl(214 32% 91%);
+  --raw-slate-100:  hsl(210 40% 96%);
+  --raw-white:      hsl(0 0% 100%);
+
+  /* Ocean Aquas & Deep Blues */
+  --raw-ocean-deep:    hsl(218 68% 12%);
+  --raw-ocean-mid:     hsl(204 76% 28%);
+  --raw-ocean-azure:   hsl(196 86% 44%);
+  --raw-ocean-aqua:    hsl(182 82% 52%);
+  --raw-ocean-seafoam: hsl(164 78% 76%);
+
+  /* Golden Hour & Dawn Ambers */
+  --raw-amber-warm:    hsl(32 94% 58%);
+  --raw-coral-glow:    hsl(12 88% 62%);
+  --raw-rose-dawn:     hsl(340 72% 70%);
+  --raw-sand-pearl:    hsl(38 32% 94%);
+  --raw-sand-gold:     hsl(36 44% 82%);
+
+  /* Bioluminescent Night */
+  --raw-bio-cyan:      hsl(175 92% 55%);
+  --raw-bio-teal:      hsl(186 85% 40%);
+  --raw-night-indigo:  hsl(232 58% 10%);
+  --raw-night-abyss:   hsl(235 60% 5%);
+
+  /* ── 2. Fluid Typography Scales ── */
+  --font-display: 'Playfair Display', 'Instrument Serif', Georgia, serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-hero:    clamp(2.5rem, 5.5vw, 5.5rem);
+  --text-h1:      clamp(1.85rem, 3.2vw, 3rem);
+  --text-h2:      clamp(1.35rem, 2.2vw, 2rem);
+  --text-h3:      clamp(1.1rem, 1.4vw, 1.35rem);
+  --text-body:    clamp(0.925rem, 0.88rem + 0.25vw, 1.05rem);
+  --text-small:   clamp(0.8rem, 0.78rem + 0.12vw, 0.875rem);
+  --text-micro:   0.75rem;
+
+  /* ── 3. Fluid Spacing Scale ── */
+  --space-2xs: clamp(0.25rem, 0.22rem + 0.12vw, 0.375rem);
+  --space-xs:  clamp(0.5rem, 0.45rem + 0.2vw, 0.625rem);
+  --space-sm:  clamp(0.75rem, 0.68rem + 0.35vw, 1rem);
+  --space-md:  clamp(1rem, 0.9rem + 0.5vw, 1.5rem);
+  --space-lg:  clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+  --space-xl:  clamp(2.25rem, 1.8rem + 1.8vw, 3.5rem);
+  --space-2xl: clamp(3.5rem, 2.8rem + 3.2vw, 5.5rem);
+
+  /* ── 4. Surface Radii & Blur ── */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-pill: 9999px;
+  --blur-glass:  blur(20px);
+  --blur-deep:   blur(36px);
+
+  /* ── 5. Motion Physics ── */
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-gentle: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-wave:   cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  --transition-atmosphere: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-ui: all 0.25s var(--ease-snappy);
+
+  /* ── 6. Semantic Defaults (Golden Hour Default) ── */
+  --surface-canvas:      hsl(28 45% 96%);
+  --surface-glass:       hsla(30, 30%, 98%, 0.65);
+  --surface-glass-card:  hsla(0, 0%, 100%, 0.75);
+  --surface-overlay:     hsla(220, 40%, 8%, 0.6);
+  --border-glass:        hsla(30, 40%, 80%, 0.35);
+  --border-focus:        hsl(32 94% 58%);
+  
+  --text-primary:        hsl(222 47% 12%);
+  --text-secondary:      hsl(218 25% 35%);
+  --text-muted:          hsl(215 20% 55%);
+  --text-on-accent:      hsl(0 0% 100%);
+  --accent-brand:        hsl(32 94% 52%);
+  --accent-glow:         hsla(32, 94%, 58%, 0.45);
+
+  --shadow-subtle:  0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  --shadow-float:   0 12px 36px -6px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-glow:    0 0 40px var(--accent-glow);
+
+  /* ── 7. Atmospheric State Tokens (Dynamic Variables for Canvas & UI) ── */
+  /* Default: Sunset / Golden Hour */
+  --sky-top:          #2a1f42;
+  --sky-mid:          #c6554b;
+  --sky-horizon:      #f9a24a;
+  --sun-color:        #ffea9f;
+  --sun-halo:         rgba(255, 170, 70, 0.4);
+  --sea-horizon-tint: #9e4644;
+  --sea-mid-tint:     #2b4865;
+  --sea-deep-tint:    #11253a;
+  --sea-foam-tint:    #fff3e0;
+  --sea-specular:     rgba(255, 220, 150, 0.75);
+  --ambient-warmth:   1.0;
+  --is-night:         0;
+}
+
+/* ── Atmospheric Mode: Dawn (清晨薄雾) ── */
+[data-atmosphere="dawn"] {
+  --surface-canvas:      hsl(210 30% 96%);
+  --surface-glass:       hsla(210, 25%, 96%, 0.68);
+  --surface-glass-card:  hsla(0, 0%, 100%, 0.82);
+  --border-glass:        hsla(210, 40%, 80%, 0.45);
+  --border-focus:        hsl(340 75% 65%);
+  --text-primary:        hsl(224 45% 15%);
+  --text-secondary:      hsl(220 22% 40%);
+  --text-muted:          hsl(218 18% 60%);
+  --accent-brand:        hsl(340 70% 64%);
+  --accent-glow:         hsla(340, 70%, 64%, 0.4);
+
+  --sky-top:          #4b5d78;
+  --sky-mid:          #a49db2;
+  --sky-horizon:      #f3c5b8;
+  --sun-color:        #ffe6db;
+  --sun-halo:         rgba(243, 197, 184, 0.5);
+  --sea-horizon-tint: #7e8499;
+  --sea-mid-tint:     #3e5c7a;
+  --sea-deep-tint:    #1a334d;
+  --sea-foam-tint:    #f7f0eb;
+  --sea-specular:     rgba(255, 235, 225, 0.65);
+  --ambient-warmth:   0.6;
+  --is-night:         0;
+}
+
+/* ── Atmospheric Mode: High Noon Azure (正午碧海) ── */
+[data-atmosphere="noon"] {
+  --surface-canvas:      hsl(198 50% 97%);
+  --surface-glass:       hsla(200, 40%, 98%, 0.72);
+  --surface-glass-card:  hsla(0, 0%, 100%, 0.85);
+  --border-glass:        hsla(195, 40%, 80%, 0.5);
+  --border-focus:        hsl(196 90% 42%);
+  --text-primary:        hsl(215 50% 12%);
+  --text-secondary:      hsl(210 30% 32%);
+  --text-muted:          hsl(205 20% 55%);
+  --accent-brand:        hsl(196 92% 42%);
+  --accent-glow:         hsla(196, 92%, 42%, 0.35);
+
+  --sky-top:          #1664b8;
+  --sky-mid:          #4ea1eb;
+  --sky-horizon:      #9be0fa;
+  --sun-color:        #ffffff;
+  --sun-halo:         rgba(255, 255, 255, 0.7);
+  --sea-horizon-tint: #1c7ba5;
+  --sea-mid-tint:     #0d8fb8;
+  --sea-deep-tint:    #0a4b73;
+  --sea-foam-tint:    #ffffff;
+  --sea-specular:     rgba(255, 255, 255, 0.9);
+  --ambient-warmth:   0.3;
+  --is-night:         0;
+}
+
+/* ── Atmospheric Mode: Sunset Golden Hour (落日余晖) ── */
+[data-atmosphere="sunset"] {
+  --surface-canvas:      hsl(28 45% 96%);
+  --surface-glass:       hsla(28, 40%, 96%, 0.7);
+  --surface-glass-card:  hsla(0, 0%, 100%, 0.8);
+  --border-glass:        hsla(28, 45%, 75%, 0.4);
+  --border-focus:        hsl(32 95% 54%);
+  --text-primary:        hsl(222 47% 12%);
+  --text-secondary:      hsl(218 25% 35%);
+  --text-muted:          hsl(215 20% 55%);
+  --accent-brand:        hsl(28 92% 54%);
+  --accent-glow:         hsla(28, 92%, 54%, 0.45);
+
+  --sky-top:          #241539;
+  --sky-mid:          #b54247;
+  --sky-horizon:      #fba248;
+  --sun-color:        #fff2b8;
+  --sun-halo:         rgba(251, 162, 72, 0.55);
+  --sea-horizon-tint: #994047;
+  --sea-mid-tint:     #31476b;
+  --sea-deep-tint:    #12223c;
+  --sea-foam-tint:    #ffecd6;
+  --sea-specular:     rgba(255, 220, 160, 0.8);
+  --ambient-warmth:   1.0;
+  --is-night:         0;
+}
+
+/* ── Atmospheric Mode: Bioluminescent Midnight (荧光夜海) ── */
+[data-atmosphere="midnight"] {
+  --surface-canvas:      hsl(230 45% 6%);
+  --surface-glass:       hsla(232, 45%, 10%, 0.75);
+  --surface-glass-card:  hsla(230, 40%, 13%, 0.82);
+  --border-glass:        hsla(175, 60%, 40%, 0.28);
+  --border-focus:        hsl(175 92% 52%);
+  --text-primary:        hsl(210 40% 96%);
+  --text-secondary:      hsl(215 25% 75%);
+  --text-muted:          hsl(215 20% 55%);
+  --accent-brand:        hsl(175 92% 52%);
+  --accent-glow:         hsla(175, 92%, 52%, 0.55);
+
+  --sky-top:          #060814;
+  --sky-mid:          #0c142b;
+  --sky-horizon:      #132447;
+  --sun-color:        #d4ecff;
+  --sun-halo:         rgba(180, 225, 255, 0.35);
+  --sea-horizon-tint: #0e1a38;
+  --sea-mid-tint:     #08243c;
+  --sea-deep-tint:    #030c18;
+  --sea-foam-tint:    #4ef5d2;
+  --sea-specular:     rgba(78, 245, 210, 0.6);
+  --ambient-warmth:   0.0;
+  --is-night:         1;
+}
