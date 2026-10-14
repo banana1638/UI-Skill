@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Subscription | Secure Checkout</title>
+  <meta name="description" content="Transparent, secure checkout with instant verification.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!--
+    DESIGN DECISION RECORD:
+    Rejected Default 1: Multi-page redirect wizard -> Single split-screen layout keeps cart total and line items constantly visible.
+    Rejected Default 2: Aggressive instant form error red banners -> Used native :user-invalid so users aren't scolded while typing.
+    Rejected Default 3: Fake countdown urgency timer -> Genuine security and cancel-anytime guarantee badges.
+  -->
+  <div class="checkout-layout">
+    <!-- Left: Payment & Billing Form -->
+    <main class="form-pane">
+      <header class="checkout-header">
+        <a href="#back" class="back-link">← Return to plans</a>
+        <h1>Account & Billing Details</h1>
+        <p class="step-indicator">Step 2 of 2 · Payment Method</p>
+      </header>
+
+      <form id="payment-form" class="checkout-form" novalidate>
+        <fieldset class="form-section">
+          <legend>Account Email</legend>
+          <div class="field-group">
+            <label for="email">Work Email</label>
+            <input type="email" id="email" name="email" required placeholder="alex@company.com" autocomplete="email">
+            <span class="field-hint">Receipts and team invites will be sent here.</span>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Payment Details</legend>
+          <div class="field-group">
+            <label for="card-name">Name on Card</label>
+            <input type="text" id="card-name" name="cardname" required placeholder="Alex Morgan" autocomplete="cc-name">
+          </div>
+
+          <div class="field-group">
+            <label for="card-number">Card Number</label>
+            <input type="tel" id="card-number" name="cardnumber" required placeholder="4242 •••• •••• 4242" maxlength="19" autocomplete="cc-number">
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="card-exp">Expiry (MM/YY)</label>
+              <input type="text" id="card-exp" name="exp" required placeholder="08/28" maxlength="5" autocomplete="cc-exp">
+            </div>
+            <div class="field-group">
+              <label for="card-cvc">Security Code</label>
+              <input type="password" id="card-cvc" name="cvc" required placeholder="123" maxlength="4" autocomplete="cc-csc">
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="trust-notice">
+          <span class="lock-icon" aria-hidden="true">🔒</span>
+          <span>256-bit TLS encrypted transaction. Cancel or pause anytime from your dashboard.</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-submit">
+          <span>Authorize & Pay $49.00</span>
+        </button>
+      </form>
+    </main>
+
+    <!-- Right: Order Summary -->
+    <aside class="summary-pane" aria-label="Order summary">
+      <div class="summary-card">
+        <h2>Order Summary</h2>
+        <div class="order-item">
+          <div>
+            <strong>DevPulse Pro</strong>
+            <p class="item-sub">Monthly billing · 14-day trial included</p>
+          </div>
+          <span class="item-price">$49.00</span>
+        </div>
+
+        <hr class="divider">
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>$49.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (calculated at billing)</span>
+          <span>$0.00</span>
+        </div>
+
+        <hr class="divider">
+
+        <div class="summary-row total">
+          <span>Total due today</span>
+          <span class="total-amount">$0.00</span>
+        </div>
+        <p class="trial-note">Your card will be billed $49.00 on Day 15 unless cancelled.</p>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>

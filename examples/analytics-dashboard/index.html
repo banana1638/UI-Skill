@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Health & Edge Latency | Telemetry Console</title>
+  <meta name="description" content="High-density real-time service health dashboard.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!--
+    DESIGN DECISION RECORD:
+    Rejected Default 1: Giant circular gauge charts -> Dense tabular rows and status badges convey exact latency without wasting viewport area.
+    Rejected Default 2: Multi-colored gradient cards -> Monochrome utilitarian borders with color strictly reserved for status states (active, degraded, error).
+    Rejected Default 3: Hiding filtering behind nested menus -> Prominent inline search and environment pill toggles.
+  -->
+  <div class="app-layout">
+    <header class="topbar">
+      <div class="brand">
+        <span class="status-dot live" aria-hidden="true"></span>
+        <h1>Edge Fleet Telemetry</h1>
+      </div>
+      <div class="topbar-actions">
+        <span class="sync-time" aria-live="polite">Last updated: 14s ago</span>
+        <button class="btn btn-sm" id="btn-refresh" type="button">Refresh Metrics</button>
+      </div>
+    </header>
+
+    <main class="dashboard-content">
+      <!-- High-Density Metrics Bar -->
+      <section class="summary-strip" aria-label="Key telemetry summary">
+        <div class="summary-cell">
+          <span class="label">Total Ingress</span>
+          <span class="val">4.28 <span class="unit">M req/min</span></span>
+          <span class="delta positive">+3.4% vs 1h ago</span>
+        </div>
+        <div class="summary-cell">
+          <span class="label">p99 Global Latency</span>
+          <span class="val">28.4 <span class="unit">ms</span></span>
+          <span class="delta positive">-1.2ms (nominal)</span>
+        </div>
+        <div class="summary-cell">
+          <span class="label">Active Edge Nodes</span>
+          <span class="val">142 <span class="unit">/ 142</span></span>
+          <span class="delta">100% capacity</span>
+        </div>
+        <div class="summary-cell">
+          <span class="label">Error Rate (5xx)</span>
+          <span class="val">0.002 <span class="unit">%</span></span>
+          <span class="delta positive">Within SLA budget</span>
+        </div>
+      </section>
+
+      <!-- Node Health Table -->
+      <section class="panel" aria-label="Edge nodes list">
+        <div class="panel-header">
+          <h2>Region Deployment Nodes</h2>
+          <div class="controls">
+            <input type="search" id="node-search" class="search-input" placeholder="Filter by region or node ID..." aria-label="Filter nodes">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Region & Node ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">Throughput</th>
+                <th scope="col">p95 Latency</th>
+                <th scope="col">CPU Load</th>
+                <th scope="col" class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="nodes-tbody">
+              <tr>
+                <td>
+                  <div class="cell-primary">iad-edge-01</div>
+                  <div class="cell-sub">US-East (N. Virginia)</div>
+                </td>
+                <td><span class="badge badge-success">Healthy</span></td>
+                <td class="tabular">842 k/s</td>
+                <td class="tabular">18.2 ms</td>
+                <td class="tabular">42%</td>
+                <td class="text-right"><button class="btn btn-ghost btn-sm" type="button">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="cell-primary">fra-edge-04</div>
+                  <div class="cell-sub">EU-Central (Frankfurt)</div>
+                </td>
+                <td><span class="badge badge-warning">High Load</span></td>
+                <td class="tabular">1.12 M/s</td>
+                <td class="tabular">44.6 ms</td>
+                <td class="tabular">88%</td>
+                <td class="text-right"><button class="btn btn-ghost btn-sm" type="button">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="cell-primary">hnd-edge-02</div>
+                  <div class="cell-sub">AP-Northeast (Tokyo)</div>
+                </td>
+                <td><span class="badge badge-success">Healthy</span></td>
+                <td class="tabular">510 k/s</td>
+                <td class="tabular">22.8 ms</td>
+                <td class="tabular">31%</td>
+                <td class="text-right"><button class="btn btn-ghost btn-sm" type="button">Inspect</button></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="cell-primary">syd-edge-01</div>
+                  <div class="cell-sub">AP-Southeast (Sydney)</div>
+                </td>
+                <td><span class="badge badge-success">Healthy</span></td>
+                <td class="tabular">298 k/s</td>
+                <td class="tabular">24.1 ms</td>
+                <td class="tabular">28%</td>
+                <td class="text-right"><button class="btn btn-ghost btn-sm" type="button">Inspect</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

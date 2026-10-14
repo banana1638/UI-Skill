@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing & Feature Comparison | DevPulse</title>
+  <meta name="description" content="Transparent, predictable infrastructure pricing for engineering teams.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!--
+    DESIGN DECISION RECORD:
+    Rejected Default 1: Neon purple glow on dark background -> Selected warm neutral precision palette for clear price legibility.
+    Rejected Default 2: Centered decorative marketing hero -> Led directly with the pricing matrix and transparent billing toggle.
+    Rejected Default 3: Hiding feature breakdown behind accordion tabs -> Put feature availability directly in the card hierarchy.
+  -->
+  <header class="page-header">
+    <div class="container">
+      <p class="eyebrow-tag">Predictable Plans</p>
+      <h1>Invest in faster deployment cycles</h1>
+      <p class="subtitle">Fair pricing designed to scale with your team's throughput. Cancel or adjust anytime.</p>
+      
+      <div class="billing-toggle-group" role="group" aria-label="Billing interval selection">
+        <button id="toggle-monthly" class="toggle-btn active" type="button" aria-pressed="true">Monthly</button>
+        <button id="toggle-annual" class="toggle-btn" type="button" aria-pressed="false">Annual <span class="discount-badge">Save 20%</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="pricing-grid">
+      <!-- Starter Card -->
+      <article class="pricing-card">
+        <div class="card-header">
+          <h2>Starter</h2>
+          <p class="card-desc">For indie hackers and early stage projects.</p>
+          <div class="price-wrap">
+            <span class="currency">$</span>
+            <span class="price-value" data-monthly="19" data-annual="15">19</span>
+            <span class="period">/mo</span>
+          </div>
+        </div>
+        <ul class="feature-list" aria-label="Starter plan features">
+          <li><strong>3</strong> Production services</li>
+          <li><strong>100GB</strong> Bandwidth / month</li>
+          <li>Community support</li>
+          <li>7-day audit logs</li>
+        </ul>
+        <a href="#signup-starter" class="btn btn-secondary">Get Started</a>
+      </article>
+
+      <!-- Pro Card (Featured) -->
+      <article class="pricing-card featured">
+        <div class="badge-featured" aria-hidden="true">Most Popular</div>
+        <div class="card-header">
+          <h2>Professional</h2>
+          <p class="card-desc">For growing startups with active daily deployments.</p>
+          <div class="price-wrap">
+            <span class="currency">$</span>
+            <span class="price-value" data-monthly="49" data-annual="39">49</span>
+            <span class="period">/mo</span>
+          </div>
+        </div>
+        <ul class="feature-list" aria-label="Professional plan features">
+          <li><strong>Unlimited</strong> Production services</li>
+          <li><strong>1TB</strong> Bandwidth / month</li>
+          <li>Priority 2-hour email support</li>
+          <li>90-day retention & audit logs</li>
+          <li>Zero-downtime rollbacks</li>
+        </ul>
+        <a href="#signup-pro" class="btn btn-primary">Start 14-Day Trial</a>
+      </article>
+
+      <!-- Enterprise Card -->
+      <article class="pricing-card">
+        <div class="card-header">
+          <h2>Scale & Enterprise</h2>
+          <p class="card-desc">Dedicated isolation, SLA guarantees, and SSO.</p>
+          <div class="price-wrap">
+            <span class="currency">$</span>
+            <span class="price-value" data-monthly="189" data-annual="149">189</span>
+            <span class="period">/mo</span>
+          </div>
+        </div>
+        <ul class="feature-list" aria-label="Enterprise plan features">
+          <li>Dedicated isolated clusters</li>
+          <li>Custom bandwidth quotas</li>
+          <li>99.99% Uptime SLA</li>
+          <li>SAML SSO & Custom SCIM</li>
+          <li>Dedicated Slack support channel</li>
+        </ul>
+        <a href="#contact-sales" class="btn btn-secondary">Contact Sales</a>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    const monthlyBtn = document.getElementById('toggle-monthly');
+    const annualBtn = document.getElementById('toggle-annual');
+    const prices = document.querySelectorAll('.price-value');
+
+    function setBilling(isAnnual) {
+      monthlyBtn.classList.toggle('active', !isAnnual);
+      monthlyBtn.setAttribute('aria-pressed', !isAnnual);
+      annualBtn.classList.toggle('active', isAnnual);
+      annualBtn.setAttribute('aria-pressed', isAnnual);
+
+      prices.forEach(el => {
+        el.textContent = isAnnual ? el.getAttribute('data-annual') : el.getAttribute('data-monthly');
+      });
+    }
+
+    monthlyBtn.addEventListener('click', () => setBilling(false));
+    annualBtn.addEventListener('click', () => setBilling(true));
+  </script>
+</body>
+</html>

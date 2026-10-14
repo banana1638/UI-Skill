@@ -1,274 +1,201 @@
 ---
 name: design-premium-frontends
-description: Product design and premium frontend architecture for substantial user-facing UI work: new products, multi-step features, screen redesigns, dashboards, design systems, and sophisticated interaction or motion implementation. Grounds work in the project's existing standards, applies proportionate product reasoning, enforces accessible production craft, and makes deliberate, non-templated visual decisions. Do not trigger for backend-only work, pure copy edits, data/schema tasks, or small UI fixes unless the user asks for design judgment, interaction craft, or visual polish.
+description: Product design and senior frontend engineering system. Orchestrates product reasoning from Discovery → Strategy → Feature Architecture → Interaction Design → Visual Craft → Vanilla CSS Design Systems → Production Code → Design Validation. Enforces lean workflows, cognitive ergonomics, state completeness, native token architecture, and anti-AI-slop craft. Do not trigger for backend-only work, pure copy edits, or database tasks.
 ---
 
-# Product Design & Premium Frontend Architecture System
+# Product Design & Senior Frontend Engineering System
 
-Transform high-level, ambiguous product requirements into rigorous, authentic, production-grade digital experiences. This system treats **Product Strategy, Domain Modeling, Information Architecture, Interaction Ergonomics, Visual Art Direction, Motion Physics, and Defensive Code Craft** as one seamless discipline. Apply it proportionally: preserve the requested scope, avoid ceremony for small fixes, and add process only when it improves the outcome.
-
-## Operating Charter: Authority, Restraint, and Evidence
-
-### 1. Authority hierarchy — never overwrite local truth
-
-Resolve conflicts in this order:
-
-1. Explicit user requirements and approved brand, legal, or accessibility requirements.
-2. Repository instructions and source-of-truth documents (`AGENTS.md`, `DESIGN.md`, contribution guides, component-library docs, tokens, screenshots, and established patterns).
-3. Framework/platform conventions and published accessibility standards.
-4. This skill's defaults and examples.
-
-Before choosing a visual direction or architecture, inspect the relevant local guidance and adjacent components. Reuse the existing token names, primitives, icon system, state patterns, and framework idioms when they exist. Do not introduce a new font, library, motion system, token layer, or visual archetype merely to make the output look more impressive.
-
-If the repository has no governing design guidance, state the assumptions briefly and create only the smallest reusable contract required for the task. When a user instruction conflicts with a local convention, follow the user and name the impact rather than silently replacing unrelated work.
-
-### 2. Proportionality rule — earn every artifact
-
-- **Level 1:** inspect, make the smallest safe change, and run a targeted check. Do not produce discovery documents, visual theses, or scorecards.
-- **Level 2:** record a concise task, audience, hierarchy, and visual direction before building. Keep this to a short working note unless the user requests a formal document.
-- **Level 3–4:** establish scope, IA/flow, and material interaction decisions before implementation. Surface a compact rationale; produce formal briefs, maps, or DDRs only when they change an implementation decision or the user requests them.
-- Do not add a design system, animation, illustration, or a novel interaction solely because the skill mentions it. Omit it when it does not serve the primary task.
-
-### 3. Delivery evidence — claims must be checkable
-
-Never claim the design is accessible, responsive, tokenized, or validated without inspecting or testing the relevant result. If a check cannot run, report the gap and the manual evidence instead. Treat generated patches and automated critique as suggestions; review their diff and preserve project conventions before applying them.
-
-### 4. Source-of-truth continuity — design, code, and delivery agree
-
-When a Figma file, design specification, component API, or token source exists, identify which artifact is authoritative for each decision. Preserve a traceable chain: **brief → source design or contract → token/component → implementation → validation evidence**. Record material deviations with the reason and owner. If no design source exists, say so; never invent a Figma link, component contract, analytics event, security claim, or benchmark result.
+Transform product requirements into authentic, high-craft, production-grade frontend experiences in **Vanilla CSS, HTML5, and JavaScript**, while adapting seamlessly to modern frameworks (**React, Vue, Tailwind, shadcn/ui**) in existing codebases.
 
 ---
 
-## 1. The 10-Layer Product Design Pipeline
+## 1. Operating Charter: Code-First & Brownfield Adaptation
 
-Codex reasons through product initiatives via a ten-layer architectural cascade:
+### The 20/80 Rule (Anti-Analysis Paralysis)
+- **At least 80% of your output must be working, accessible, production-ready code.**
+- Product reasoning, design briefs, and context notes must be concise, taking no more than **15–20% of output**.
+- Never output massive multi-page product discovery essays while leaving code incomplete or placeholder-ridden.
 
-```text
-01 PRODUCT DISCOVERY      ──> Problem Quad-Layer, Personas, JTBD, Non-Goals
-        ↓
-02 PRODUCT STRATEGY       ──> Vision, Opinionated Principles, Scoping, Metrics
-        ↓
-03 PRODUCT ARCHITECTURE   ──> Capability Mapping, Feature Decomposition
-        ↓
-04 UX ARCHITECTURE        ──> User Journeys, Route Sitemaps, Information Architecture
-        ↓
-05 INTERACTION DESIGN     ──> User Flows, Form Factors (Drawer vs Modal), DDRs
-        ↓
-06 VISUAL DIRECTION       ──> Visual Thesis, Archetype DNA, Typography & Color
-        ↓
-07 DESIGN SYSTEM          ──> 3-Layer Token Scale, Semantic Roles, CVA Primitives
-        ↓
-08 PROTOTYPING            ──> Multi-state Workflows, Screen Transitions, Micro-haptics
-        ↓
-09 FRONTEND CRAFT         ──> Defensive UI, A11y (WCAG AA), Mobile 320px+, Touch Targets
-        ↓
-10 DESIGN VALIDATION      ──> 10-Dimension Scorecard, 9-Point Anti-AI-Slop Audit
+### Proportionality Tiers
+- **Level 1: Surgical Fix** (CSS bugs, alignment, token swaps) → Inspect → Fix directly → Targeted verification. No design docs or scorecards.
+- **Level 2: Standalone Screen** (Landing page, pricing table, settings screen) → 3-line Context Note + 3 Rejected Defaults → Direct implementation → Brief QA check.
+- **Level 3: Feature System** (Checkout flow, interactive dashboard, multi-step wizard) → Compact Note (JTBD + IA + Key Tradeoff) → Direct implementation → 10-Dimension Scorecard.
+
+### Brownfield Circuit Breaker (Existing Stacks & Coexistence)
+When operating in an existing codebase (Next.js, Vite, React, Vue, Svelte, Tailwind, shadcn/ui, MUI, AntD):
+1. **Never inject parallel vanilla `:root` token scales** if the repository already has an active design system or `tailwind.config.js`.
+2. **Reuse existing primitives**: If shadcn/ui, Radix, or a component library exists, use their components (`Button`, `Dialog`, `Popover`) instead of rolling custom primitives from scratch.
+3. **Respect local styling idioms**: Apply this skill's architectural taste (7:3 asymmetric layout, typographic lead, high density, zero purple glow, WCAG AA contrast) **through the repository's native styling tools** (Tailwind classes, CSS Modules, or Styled Components).
+
+### Authority Hierarchy
+1. Explicit user instructions.
+2. Local repository truth (`DESIGN.md`, existing tokens, established framework/CSS patterns).
+3. Web platform standards & WCAG accessibility rules.
+4. This skill's defaults.
+
+---
+
+## 2. Visual Distinctiveness & Anti-AI-Slop Gate
+
+AI models routinely produce homogenous templates. To guarantee bespoke human craft:
+
+### Mandatory: The "Three Rejected Defaults"
+Before writing layout code, **record three tempting defaults you deliberately rejected in code comments** and why they do not fit the specific domain:
+
+```css
+/*
+ * DESIGN DIRECTION & REJECTED DEFAULTS:
+ * Rejected Default 1: Dark Obsidian theme with neon purple glow -> Needs clean daylight contrast for dense tabular scannability.
+ * Rejected Default 2: Centered marketing hero with 3 metric cards -> User primary task is instant data entry, not marketing overview.
+ * Rejected Default 3: Heavy glassmorphism / backdrop-blur -> Reduces text contrast and degrades rendering performance.
+ */
 ```
 
+### Positive Structural Layout Archetypes (Hard Constraints)
+Every screen must commit to one of these three explicit structural layout paradigms to prevent falling back on symmetrical 3-card grids:
+1. **The 7:3 Asymmetric Functional Split**: Desktop viewport is split into 70% primary work canvas (table, editor, form) and 30% persistent, sticky contextual inspection or action rail.
+2. **Left-Aligned Typographic Lead**: Oversized display headline (`clamp(2.25rem, 4vw, 4rem)`), tight tracking (`-0.03em`), left-aligned with a parallel metadata sidebar (status badge, timestamp, author), completely replacing centered marketing slogans.
+3. **High-Density Linear Ledger**: Full-width horizontal rows with hairline borders, tabular-numeric columns (`tabular-nums`), inline state chips, and zero nested cards.
+
+*(See [references/visual-craft.md](references/visual-craft.md) for benchmark studies on Pitch, Liveblocks, Resend, and Cal.com).*
+
 ---
 
-## 2. Task Classification & Complexity Gate (Orchestration Engine)
+## 3. Interaction Decision Matrix
 
-Before writing any code or documentation, classify the incoming request into the appropriate complexity tier:
+Choose container patterns that protect user attention and minimize cognitive context switches:
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│ Is this a backend-only / non-UI task?                       │
-│ └── YES: Do NOT trigger UI/Product Design workflows.       │
-├─────────────────────────────────────────────────────────────┤
-│ Level 1: Surgical UI Fix                                    │
-│ (CSS bugs, alignment, padding, token swap, minor copy)     │
-│ └── Workflow: Inspect → Fix → Validate                     │
-├─────────────────────────────────────────────────────────────┤
-│ Level 2: Screen Design                                      │
-│ (Single standalone view, landing page, settings screen)     │
-│ └── Workflow: Context → Hierarchy → Thesis → UI → Review   │
-├─────────────────────────────────────────────────────────────┤
-│ Level 3: Feature Design                                     │
-│ (Multi-step flow, checkout, course registration, messaging)│
-│ └── Workflow: Problem → Scope → Flow → IA → DDR → UI → QA  │
-├─────────────────────────────────────────────────────────────┤
-│ Level 4: Full Product Design                                │
-│ (Greenfield SaaS, multi-role portal, enterprise system)     │
-│ └── Workflow: Discovery → Strategy → Capability → IA →     │
-│               Journey → Domain UX → Tokens → Screens → QA   │
-└─────────────────────────────────────────────────────────────┘
+- **Modal (`<dialog>`)**: Destructive confirmations, critical system alerts, or simple single-field micro-actions. *Never put multi-step forms or wide data tables in a modal.*
+- **Drawer / Sheet**: Deep inspection or editing of a list/table row while keeping background scroll context visible.
+- **Dedicated Page**: High-focus multi-stage wizards, account dashboards, complex configuration.
+- **Native Popover (`popover`)**: Transient filter menus, contextual action toolbars, field hints.
+- **Inline Edit**: In-place single field updates with optimistic feedback.
+
+*(See [references/product-process.md](references/product-process.md) for JTBD formulas and flow modeling).*
+
+---
+
+## 4. Vanilla CSS & Token Architecture (Greenfield Projects)
+
+For greenfield projects without existing frameworks, default to **Vanilla CSS with native CSS Custom Properties** for maximum performance and flexibility.
+
+### 3-Tier Token Blueprint
+```css
+:root {
+  /* Tier 1: Primitives */
+  --color-slate-50:  hsl(210 20% 98%);
+  --color-slate-900: hsl(215 25% 12%);
+  --color-blue-600:  hsl(221 83% 53%);
+
+  /* Tier 2: Semantic Roles */
+  --surface-canvas:    var(--color-slate-50);
+  --surface-card:      #ffffff;
+  --text-primary:      var(--color-slate-900);
+  --border-subtle:     hsl(215 14% 88%);
+  --intent-primary:    var(--color-blue-600);
+
+  /* Physics & Durations */
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
 ```
 
-> **Cardinal Rule on Premature UI**:
-> For **Level 3** and **Level 4** initiatives, **DO NOT** jump straight from requirement to HTML/React/CSS markup. First establish the structural product foundation (Scope, IA, Flow, Key DDRs). Present only the smallest summary needed to align the user; do not turn planning into a deliverable by default.
+### Layout Resilience & Modern CSS
+- **Fluid Typography**: Use `clamp()` for continuous font and spacing scaling between 360px and 1280px.
+- **Intrinsic Grids**: `grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));`.
+- **Defensive Sizing**: Flex children with text truncation must include `min-width: 0;`.
+- **Container Queries**: Use `@container` to adapt child components to parent width, not just window width.
+
+*(See [references/layout-and-resilience.md](references/layout-and-resilience.md) for fluid scales and defensive CSS).*
 
 ---
 
-## 3. Product Discovery & Strategic Modeling (Levels 3 & 4)
+## 5. Defensive State Coverage & Accessibility Floor
 
-1. **Problem Framing (Quad-Layer)**: Dissect every request into Business, User, Technical, and Design problems. Never treat a requested feature (e.g., *"Make a dashboard"*) as the root problem. (See [references/product-discovery-protocol.md](references/product-discovery-protocol.md)).
-2. **Jobs To Be Done (JTBD)**: Model user intent using the outcome formula:
-   > *When [Context], I want to [Core Action], so that [Outcome/Relief].*
-3. **Opinionated Principles & Non-Goals**: Establish explicit trade-off rules (e.g., *Context preservation over screen estate*) and document what the product deliberately will **NOT** solve. (See [references/product-strategy-protocol.md](references/product-strategy-protocol.md)).
-4. **Feature Decomposition**: Break domains down hierarchically: **Capability → Feature → User Task → Interaction**. Never treat layout containers (Table, Modal, Card) as features. (See [references/feature-decomposition.md](references/feature-decomposition.md)).
-5. **Domain → UX Mapping**: Translate domain entities into authentic mental models and UI metaphors (e.g., *Advising Degree Tree, Kitchen Preparation Workbench, Financial Ledger*). (See [references/domain-to-ux.md](references/domain-to-ux.md)).
+Every production frontend interface must satisfy non-negotiable craft requirements:
 
----
+### The 5 Essential UI States
+1. **Ideal State**: Clean presentation with balanced hierarchy.
+2. **Loading State**: Content-shaped shimmer skeletons matching upcoming layout geometry (avoid full-page spinners).
+3. **Empty State**: Purposeful graphic or indicator, friendly explanation, and primary action to populate data.
+4. **Error State**: Actionable recovery message with a "Retry" trigger, preserving entered user input.
+5. **Partial / Overflow State**: Handles 40-character names, missing avatars, null data fallbacks (`—`), and 320px mobile viewports.
 
-## 4. Information Architecture & Interaction Design
+### Accessibility Floor (WCAG 2.2 AA)
+- Touch targets $\ge 44 \times 44\text{px}$ on touch viewports.
+- Text contrast ratio $\ge 4.5:1$ against surface background.
+- High-contrast `:focus-visible` outline rings on all interactive elements.
+- Native form validation using `:user-invalid` so users aren't scolded prematurely while typing.
+- Full keyboard operability (Tab order, Escape to close dialogs/menus).
 
-1. **Information Architecture (IA)**: Design logical sitemaps, route hierarchies, and faceted filter structures prior to page layout. (See [references/information-architecture.md](references/information-architecture.md)).
-2. **5-Level Flow Modeling**: Map progressions through **Journey → User Flow → Task Flow → Screen Flow → Interaction Flow**. (See [references/user-journey-protocol.md](references/user-journey-protocol.md)).
-3. **Interaction Pattern Decision Tree**:
-   - **Modal**: Interruptive, destructive confirmations or micro-actions only. *Never put multi-step forms or heavy data tables inside a modal.*
-   - **Sheet / Drawer**: Contextual inspection/editing of a list item while preserving background scroll anchor.
-   - **Dedicated Page / Sub-page**: High-focus, multi-stage wizards, and immersive analytics.
-   - **Inline Edit / Popover**: Zero-interruption in-place editing for low-risk single fields.
-4. **Design Decision Records (DDR)**: Justify structural trade-offs with context, evaluated options, chosen rationale, and mobile mitigations. (See [references/design-decision-record.md](references/design-decision-record.md)).
+*(See [references/interaction-and-a11y.md](references/interaction-and-a11y.md) for HTML5 `<dialog>`, Popover API, and trust patterns).*
 
 ---
 
-## 5. Visual Direction & Design System Architecture
+## 6. Calibrated Motion Design
 
-1. **Visual Thesis**: Formulate an intentional design thesis statement:
-   > *"This interface should feel [2-3 emotional qualities] through [2-3 concrete visual mechanisms], while keeping [primary task] effortless and accessible."*
-2. **Archetype DNA**: Select a tailored visual persona (Modern Tech, Neo-Brutalism, Warm Editorial, Enterprise Clean, Obsidian Cyberpunk, Skeuomorphic Tactile). (See [references/visual-direction-system.md](references/visual-direction-system.md)).
-3. **3-Tier Token Blueprint**: Define tokens strictly by hierarchy: **Raw Scales → Semantic Roles → Component Overrides**.
-   ```css
-   :root {
-     --surface-canvas: hsl(220 20% 98%);
-     --text-primary: hsl(220 30% 10%);
-     --accent-brand: hsl(245 80% 60%);
-     --border-subtle: hsl(220 15% 90%);
-     --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
-     --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-     --shadow-elevation: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
-   }
-   ```
-4. **Component Architecture**: When patterns repeat or variants multiply, use the project's established variant and composition pattern. In Tailwind projects, this may be Class Variance Authority (`cva`) and `cn()`; do not introduce them where another local pattern is authoritative. Extract repeated styling because it repeats or has meaningful states—not because a class-count threshold was crossed. (See [references/framework-adapters.md](references/framework-adapters.md) and [references/compound-components-and-modern-css.md](references/compound-components-and-modern-css.md)).
+1. **CSS First**: Implement transitions and state animations in native CSS.
+2. **Motion Safety**: Always include `@media (prefers-reduced-motion: reduce)` overrides to disable animations for users sensitive to motion.
+3. **GSAP Restraint**: Use standard free GSAP 3 core only when complex multi-track timeline scrubbing or coordinate choreography is strictly necessary. Never reference paid Club GreenSock plugins.
 
-### Distinctiveness and Restraint Gate (Level 2+)
-
-Ground the visual direction in the actual subject matter, audience, content, materials, and task—not a generic style label. Before implementation, write a compact design contract:
-
-- **Primary job and audience:** What must become easier for whom?
-- **Signature decision:** The one visual, spatial, typographic, or interaction choice that makes this work recognizably specific to the brief.
-- **Restraint budget:** Spend boldness in one place; keep the surrounding hierarchy quiet, legible, and task-focused.
-- **Three rejected defaults:** Name three tempting choices that would make this design feel interchangeable, and why they do not fit this brief.
-
-Do not reach automatically for centered hero copy, a metric-card grid, evenly rounded cards, decorative gradients, a single acid accent on near-black, warm-cream editorial styling, generic typefaces, all-caps eyebrows, or arrows appended to every action. They are permitted only when they are demonstrably the best fit for this project. Prefer real content and subject-specific visual material over placeholder copy and decorative chrome. See [references/design-inspiration-and-benchmarks.md](references/design-inspiration-and-benchmarks.md) and [references/visual-direction-system.md](references/visual-direction-system.md).
+*(See [references/motion-and-gsap.md](references/motion-and-gsap.md) for spring easing physics and GSAP cleanup patterns).*
 
 ---
 
-## 6. Frontend Engineering & Defensive Craft
+## 7. Design Validation & Quality Gates
 
-1. **Accessibility Floor (WCAG AA)**:
-   - Body copy size $\ge 14\text{px}$ (`text-sm`); `text-xs` restricted to badges and secondary timestamps.
-   - Text contrast ratio $\ge 4.5:1$ against surface background.
-   - Interactive touch targets $\ge 44 \times 44\text{px}$ on mobile.
-   - Visible high-contrast focus rings (`:focus-visible`).
-2. **Defensive UI Integrity**:
-   - Flex parents must include `min-w-0` to avoid layout blowout; dynamic text must use `truncate` or `line-clamp-*`.
-   - Every data view must implement **Loading (Skeleton), Actionable Empty, and Error Retry** states.
-3. **Calibrated Motion Physics**:
-   - Primary panels & drawers: Snappy Spring `cubic-bezier(0.16, 1, 0.3, 1)`.
-   - Buttons & tactile controls: Bounce `cubic-bezier(0.34, 1.56, 0.64, 1)`.
-   - Motion safety: Wrap hover styles in `@media (hover: hover)` and respect `prefers-reduced-motion`.
-
-Motion is opt-in, not decoration. Add it only when it clarifies hierarchy, spatial continuity, status feedback, or direct manipulation. One well-orchestrated transition is preferable to scattered entrance effects; static clarity always wins over theatricality. See [references/taste-system-v4-avant-garde.md](references/taste-system-v4-avant-garde.md).
-
-### Content Resilience, Localization, and Performance (when applicable)
-
-- Treat production content as a layout input. Test long headings, names, navigation labels, unbroken identifiers, zero/large values, loading, empty, partial-permission, and error states before calling a data-bearing interface complete.
-- When a product is localized, supports multiple writing directions, or could receive international input, use semantic HTML and logical CSS properties. Verify translated dates, numbers, addresses, input methods, long strings, and RTL order; never use English placeholder copy as the only layout proof.
-- Preserve the repository's browser-support policy. Prefer progressive enhancement for modern CSS and platform APIs, with an explicit fallback when a core task would otherwise fail.
-- Set a task-appropriate performance budget before adding expensive fonts, images, scripts, canvas, video, or animation. Measure relevant resource transfer, LCP/INP/CLS where the environment supports it; explain any exceeded budget rather than hiding it behind visual polish.
-- For identity, payment, health, permissions, destructive actions, or other high-trust paths, make authority, consequences, recovery, and data handling legible. Do not invent security claims, compliance badges, urgency, scarcity, or testimonials.
-
----
-
-## 7. Scripted Validation & Toolchain
-
-Use scripts when they add observable confidence and their prerequisites are available. Keep them proportional to risk:
-
-- **Static motion safety:** `node scripts/check-motion-safety.js <target>` for substantial animation work or unsafe-property review.
-- **Render inspection:** `python scripts/render_pipeline.py <html-file-or-url>` when visual output, viewport behavior, color use, or DOM metrics matter.
-- **Vision review:** `python scripts/vision_reviewer.py <path-to-summary.json> --provider mock|openai|anthropic` after a render. Use `mock` for deterministic offline checks; live providers require configured credentials and user authorization for external calls.
-- **Design loop:** `python scripts/design_loop.py <html-file-or-url> --max-iter 3 --target-score 8.5 --provider mock|openai|anthropic` only for high-value iterative polish.
-- **Patch generation:** Treat `scripts/patch_generator.py` output as a draft. Inspect the diff and test it before applying it.
-- **Accessibility gate:** `python scripts/frontend_quality_gate.py <html-file> --strict` for a static semantic and interaction-contract scan. For interactive pages, also walk the primary flow by keyboard in a real browser.
-- **Visual regression:** `python scripts/visual_regression.py <baseline-dir> <candidate-dir> --threshold 0.02` after rendering the agreed viewport and state matrix. A reviewed screenshot is not a visual-regression pass.
-- **Performance budget:** `python scripts/performance_budget.py <path-to-summary.json>` after rendering a new or materially changed page. Use the project budget when present; otherwise report the default budget as a starting point, not a universal standard.
-
-
-If a dependency or browser is unavailable, fall back to manual inspection and explicitly report that validation gap. Do not silently substitute a mock result for a visual review.
-
----
-
-## 8. Product Validation & Design Quality Gates
-
-Before delivery, validate proportionally. Level 1 needs targeted checks. Level 2–4 work with meaningful product or visual decisions should use the **10-Dimension Scorecard** and the **9-Point Anti-AI-Slop Test Suite**. A score is a diagnostic, not evidence; attach concrete observations or test output to any score that affects the verdict. (See [references/product-validation.md](references/product-validation.md).)
+Assess output honestly. **Never award self-congratulatory 10/10 or 98/100 scores**. High-craft production code typically scores **8.0 – 8.8 / 10.0** with documented tradeoffs and next iteration steps.
 
 ```markdown
-### 📊 Design Review Scorecard
+### 📊 Calibrated Design Review
 - Product Fit: [X]/10
-- User Understanding: [X]/10
-- Task Clarity: [X]/10
+- Task Clarity (Single Primary Action): [X]/10
 - Information Architecture: [X]/10
-- Interaction Design: [X]/10
-- Visual Hierarchy: [X]/10
-- Visual Identity: [X]/10
-- Accessibility: [X]/10
-- Consistency: [X]/10
-- Technical Quality: [X]/10
-**Overall Score: [X.X] / 10.0** — Verdict: [PASS | REVISE]
+- Interaction Ergonomics: [X]/10
+- Visual Hierarchy & Taste: [X]/10
+- Accessibility (WCAG AA, Touch $\ge 44\text{px}$): [X]/10
+- Defensive UI (5 States, 320px responsive): [X]/10
+- Code Quality (Token consistency, zero dead bloat): [X]/10
+**Overall Calibrated Score: [X.X] / 10.0**
+*Documented Tradeoffs & Next Iterations:* [Brief note]
 ```
 
-### The 9-Point Anti-AI-Slop Tests
+### The 9-Point Anti-AI-Slop Test
 1. **Squint Test**: Does visual hierarchy hold at low resolution?
 2. **Logo Removal Test**: Does brand character persist without a logo?
-3. **Motion Purpose Test**: Does all movement serve spatial feedback?
-4. **High Contrast Test**: Is copy legible in pure grayscale?
-5. **Template Test**: Is layout custom-derived from the domain rather than generic cards?
-6. **Metaphor Test**: Do UI metaphors match real user mental models?
-7. **Hierarchy Test**: Is there only ONE clear Primary Action per viewport?
-8. **Task Test**: Can users complete their core JTBD with minimal friction?
-9. **Consistency Test**: Are recurring styles derived from coherent tokens rather than scattered one-off values?
+3. **Template Test**: Is layout custom-derived from the domain rather than generic cards?
+4. **Contrast Grayscale Test**: Is copy and boundary hierarchy clear in pure grayscale?
+5. **Reduced Motion Test**: Does the interface function cleanly without motion?
+6. **Touch Target Test**: Are all mobile buttons $\ge 44 \times 44\text{px}$?
+7. **Single Primary Action Test**: Is there only ONE visual primary button above the fold?
+8. **Extreme Content Test**: Does layout survive 35-character strings and zero metrics?
+9. **Token Purity Test**: Are all values bound to design tokens without arbitrary magic numbers?
 
-### Non-Negotiable Release Gate
-
-Do not mark work complete when any applicable item is unresolved:
-
-- A local design or engineering convention was replaced without an explicit reason.
-- A core path lacks a loading, empty, error, or recovery state where data or asynchronous actions are involved.
-- Keyboard focus, reduced motion, contrast, responsive containment, or touch-target requirements were not checked.
-- The signature decision cannot be connected to the brief, or decoration competes with the primary action.
-- Validation was skipped or failed and the delivery note does not say so.
-- A localized, data-bearing, sensitive, or permissioned flow shipped without the applicable content, trust, and recovery checks.
-- A material design-to-code deviation, token addition, or component API change lacks a traceable source and migration note.
+*(See [references/validation-and-qa.md](references/validation-and-qa.md) for full gate criteria).*
 
 ---
 
-## 9. Reference Protocols Catalog
+## 8. Reference Protocols Catalog
 
-- [references/product-discovery-protocol.md](references/product-discovery-protocol.md) — Quad-layer problem definition, Persona taxonomy, JTBD, Goals, Non-goals.
-- [references/product-strategy-protocol.md](references/product-strategy-protocol.md) — Product vision, opinionated principles, MoSCoW scoping, KPIs, Product Brief template.
-- [references/feature-decomposition.md](references/feature-decomposition.md) — Capability → Feature → Task → Interaction 4-tier cascade.
-- [references/domain-to-ux.md](references/domain-to-ux.md) — Domain concepts to user mental models, interaction models, and authentic UI metaphors.
-- [references/user-journey-protocol.md](references/user-journey-protocol.md) — 5-level flow hierarchy, journey narratives, and exception path recovery.
-- [references/information-architecture.md](references/information-architecture.md) — Sitemaps, navigation ontologies, faceted search, RBAC route projections.
-- [references/design-decision-record.md](references/design-decision-record.md) — DDR schema, architectural trade-offs, and interaction justification.
-- [references/design-deliverables.md](references/design-deliverables.md) — Level 1 to Level 4 output contracts and premature UI prevention rules.
-- [references/product-validation.md](references/product-validation.md) — 8-pillar validation matrix, 10-dimension review score, and 9-point Anti-AI-Slop suite.
-- [references/product-design-protocol.md](references/product-design-protocol.md) — Interaction pattern trees, cognitive load laws (Hick's/Fitts's), and feedback loops.
-- [references/visual-direction-system.md](references/visual-direction-system.md) — 7 visual archetypes, typography matrix, and visual DNA formulas.
-- [references/color-and-token-system.md](references/color-and-token-system.md) — 3-layer token scale, OKLCH/HSL color roles, and elevation mechanics.
-- [references/framework-adapters.md](references/framework-adapters.md) — CVA architecture, Tailwind token binding, and React/Vue/Svelte adapters.
-- [references/gsap-animation-patterns.md](references/gsap-animation-patterns.md) — Timeline orchestration, ScrollTrigger, and spring easing physics.
-- [references/accessibility-motion-performance.md](references/accessibility-motion-performance.md) — WCAG AA compliance, focus rings, and reduced motion safety.
-- [references/interface-craft-checklist.md](references/interface-craft-checklist.md) — Component state auditing, defensive containment, and delivery checks.
-- [references/fluid-layout-and-typography.md](references/fluid-layout-and-typography.md) — Fluid type scales, intrinsic layouts, and container queries.
-- [references/form-and-trust-patterns.md](references/form-and-trust-patterns.md) — Inline form validation, error recovery, and high-trust patterns.
-- [references/compound-components-and-modern-css.md](references/compound-components-and-modern-css.md) — Composition contracts, overlay semantics, and progressive modern CSS.
-- [references/design-inspiration-and-benchmarks.md](references/design-inspiration-and-benchmarks.md) — Design references, typography sources, and anti-slop taste calibration.
-- [references/taste-system-v4-avant-garde.md](references/taste-system-v4-avant-garde.md) — Fit-tested art direction, tactile treatments, and modern CSS primitives.
-- [references/quality-assurance-and-evaluation.md](references/quality-assurance-and-evaluation.md) — Scenario-based skill evaluation, accessibility gates, and visual-regression evidence.
-- [references/performance-and-content-resilience.md](references/performance-and-content-resilience.md) — Performance budgets, real-content stress tests, localization, and browser support.
-- [references/design-system-governance.md](references/design-system-governance.md) — Token lifecycle, naming review, theme compatibility, and migration records.
-- [references/trust-observability-and-handoff.md](references/trust-observability-and-handoff.md) — Sensitive-flow trust patterns, outcome telemetry, and design-to-code traceability.
+All detailed references are consolidated into 6 lean, high-density files:
+
+- [references/visual-craft.md](references/visual-craft.md) — Positive structural layout archetypes (7:3, typographic lead, ledger), non-trope benchmarks (Pitch, Resend, Cal.com), and 3-tier token architecture.
+- [references/product-process.md](references/product-process.md) — 20/80 time budget rule, JTBD formulas, interaction decision matrix, and lean DDRs.
+- [references/interaction-and-a11y.md](references/interaction-and-a11y.md) — WCAG AA/AAA floor, Popover API, `<dialog>`, `:user-invalid`, and 5 core UI states.
+- [references/motion-and-gsap.md](references/motion-and-gsap.md) — CSS-first transitions, spring curves, reduced motion, and lightweight GSAP core.
+- [references/layout-and-resilience.md](references/layout-and-resilience.md) — Fluid typography (`clamp()`), subgrid, container queries, and defensive CSS sizing.
+- [references/validation-and-qa.md](references/validation-and-qa.md) — 10-dimension calibrated scorecard, 9-point anti-slop audit, and release gates.
+
+---
+
+## 9. Production Example Implementations
+
+Study these three concise, real-world examples:
+
+1. **[examples/saas-pricing-tier](examples/saas-pricing-tier)** — High-converting pricing comparison with annual/monthly switch, fluid type, and honest 8.5/10 review.
+2. **[examples/analytics-dashboard](examples/analytics-dashboard)** — High-density SRE edge latency telemetry with monospace tabular alignment, live indicators, and honest 8.4/10 review.
+3. **[examples/checkout-flow](examples/checkout-flow)** — Accessible split-screen subscription checkout with native `:user-invalid` validation, trust indicators, and honest 8.6/10 review.
